@@ -1,5 +1,9 @@
-#include "Canvas.hpp"	
-	Canvas::Canvas() {
+#include "Canvas.hpp"
+#include "View.hpp"
+#include "Items.hpp"
+#include "MainWindow.hpp"
+	
+	Canvas::Canvas(View* view_ ):view(view_)  {
 		setFlag( QGraphicsItem::ItemStacksBehindParent );
 		setPen( Qt::NoPen );
 		setBrush( QColor( 255, 255, 255 ) );
@@ -9,7 +13,8 @@
 		effect->setOffset( 0 );
 		effect->setColor( QColor( 64, 64, 64 ) );
 		setGraphicsEffect( effect );
-		setFiltersChildEvents(true);	
+		setFiltersChildEvents(true);
+		getView()->getTool();		
 	}
 	
 	QPointF Canvas::getTopLeft() const  {
@@ -33,14 +38,34 @@
 
 	void Canvas::mouseLeaveEvent(){
 		innerCanvas=false;
-		qDebug()<<"Canvas::mouseLeaveEvent()";
+		if (currentItem) {
+		getView()->scene()->removeItem(currentItem); 
+		delete(currentItem);
+		currentItem=nullptr;
+		}	
 	}
-
+		
 	
-	void Canvas::mouseMoveEvent(){
-		innerCanvas=true;
-		qDebug()<<"Canvas::mouseMoveEvent()";
+	void Canvas::mouseMoveEvent(QMouseEvent *event){
+						innerCanvas=true;
+		QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
+											 getView()->mapToScene( event->pos() ).y());												 
+		auto      		MW 		   = static_cast<MainWindow*>(getView()->parent()->parent());
+		toolType tool = MW->getTool() ;
+		if (tool == toolType::line_dashed){
+		}
+		if (tool == toolType::line_solid){
+			if (!currentItem) {			
+				currentItem = new myline(QPointF(mouseCoord.x(),mouseCoord.y()));		
+				getView()->scene()->addItem(currentItem);
+			}			
+			else { 
+			currentItem->changefirstPointCoord(mouseCoord);			
+			}
+		}	
 	}
 	
 	bool Canvas::isinner() {return innerCanvas;}
+	
+	View* Canvas::getView() const  {return view;}
 	

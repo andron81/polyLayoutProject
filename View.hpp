@@ -1,18 +1,21 @@
 #pragma once
 #include "Canvas.hpp"
 
+
+
 class View : public QGraphicsView {
 	const int			scalefactorMin		= 1;
 	const int			scalefactorMax		= 200;
 	const int			scalefactorDiv		= 10;
 	int					scalefactor			= scalefactorDiv;
-	QWidget* 			mainWin;
 	Canvas * 			canvas;
-
+	QGraphicsItem* 		currentItem			=nullptr;
 	public:
+	//toolType getTool() {return static_cast<MainWindow>(mainWin)->getTool();}
+	toolType getTool() ;
 	View( QGraphicsScene * p_scene, QWidget * p_parent )
-		: QGraphicsView( p_scene, p_parent ),mainWin(p_parent),
-		canvas(new Canvas)
+		: QGraphicsView( p_scene, p_parent ),
+		  canvas(new Canvas(this))
 	{
 
 
@@ -45,7 +48,7 @@ class View : public QGraphicsView {
 			(mouseCoord.x()>=canvasTopLeft.x() && mouseCoord.x()<=canvasTopLeft.x()+canvasSize.width() ) &&
 		    (mouseCoord.y()>=canvasTopLeft.y() && mouseCoord.y()<=canvasTopLeft.y()+canvasSize.height())
 			)
-		 canvas->mouseMoveEvent(); 
+		 canvas->mouseMoveEvent(event); 
 		 else if (canvas->isinner()) canvas->mouseLeaveEvent(); 
 	}
 	void update_zoom() {

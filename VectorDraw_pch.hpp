@@ -37,3 +37,5 @@
 
 #include <QWheelEvent>
 #include <QIntValidator>
+
+enum class toolType { none, edit, line_solid, line_dashed, text, size};

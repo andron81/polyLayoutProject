@@ -68,7 +68,9 @@ MainWindow::MainWindow()
 		layoutMain->addWidget( view );
 		view->setFocus();
 	}
-	
+	toolType MainWindow::getTool() {
+		return currentActiveTool;
+	}
 	void MainWindow::actOpen() {
 		editBlk.setVisible(false);
 	}

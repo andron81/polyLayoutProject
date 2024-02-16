@@ -2,7 +2,6 @@
 #include "VectorDraw_pch.hpp"
 #include "View.hpp"
 
-enum class toolType { none, edit, line_solid, line_dashed, text, size};
 
 
 struct editBlock{
@@ -15,8 +14,7 @@ struct editBlock{
 };
 
 class MainWindow : public QMainWindow {
-	Q_OBJECT
-	QMainWindow *				mainWindow;
+	Q_OBJECT	
 	QGraphicsScene *			scene;
 	View *						view;
 	toolType 					currentActiveTool		=	toolType::none;
@@ -41,7 +39,7 @@ public slots:
 	void actarrow_up();
 	void actarrow_down();
 public: 
-	
+	toolType getTool();
 	const QVector<itemsMenuType> filemenuItems = {
 		{"Открыть",  	 &MainWindow::actOpen},
 		{"Сохранить",	 &MainWindow::actSave},
