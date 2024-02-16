@@ -52,8 +52,7 @@
 											 getView()->mapToScene( event->pos() ).y());												 
 		auto      		MW 		   = static_cast<MainWindow*>(getView()->parent()->parent());
 		toolType tool = MW->getTool() ;
-		if (tool == toolType::line_dashed){
-		}
+
 		if (tool == toolType::line_solid){
 			if (!currentItem) {			
 				currentItem = new myline(QPointF(mouseCoord.x(),mouseCoord.y()));		
