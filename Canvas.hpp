@@ -1,15 +1,15 @@
 #pragma once
 class View;
-class MyQGraphicsItem;
+
 class Canvas : public QGraphicsRectItem {
-	bool 					innerCanvas = false;	
+	bool 					isMouseInsideCanvas = false;	
 	View* 					view;
-	MyQGraphicsItem*		currentItem = nullptr;			
+	QGraphicsItem*		currentItem = nullptr;			
 
 public:
 	Canvas(View* );
 	
-
+	bool isMouseInside();
 	QPointF getTopLeft() const  ; 
 
 	QPointF getBottomRight() const  ;
@@ -20,5 +20,6 @@ public:
 	void setSize( const QSize & size ); 
 	void mouseLeaveEvent();
 	void mouseMoveEvent(QMouseEvent *);
-	bool isinner();
+	void mousePressEvent(QMouseEvent *);
+	toolType getTool();	
 }; // class view_canvas

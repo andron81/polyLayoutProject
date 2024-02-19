@@ -13,6 +13,12 @@ class View : public QGraphicsView {
 	public:
 	//toolType getTool() {return static_cast<MainWindow>(mainWin)->getTool();}
 	toolType getTool() ;
+	bool isMouseInsideCanvas(QPointF 	mouseCoord) {
+		
+		return (mouseCoord.x()>=canvas->getTopLeft().x() && mouseCoord.x()<=canvas->getTopLeft().x()+canvas->getSize().width() ) &&
+			   (mouseCoord.y()>=canvas->getTopLeft().y() && mouseCoord.y()<=canvas->getTopLeft().y()+canvas->getSize().height());
+		
+	}
 	View( QGraphicsScene * p_scene, QWidget * p_parent )
 		: QGraphicsView( p_scene, p_parent ),
 		  canvas(new Canvas(this))
@@ -44,13 +50,15 @@ class View : public QGraphicsView {
 		QPointF 		mouseCoord = {mapToScene( event->pos() ).x(),mapToScene( event->pos() ).y()};
 		QSize			canvasSize = canvas->getSize(); 
 		QPointF 		canvasTopLeft = canvas->getTopLeft();
-		if (
-			(mouseCoord.x()>=canvasTopLeft.x() && mouseCoord.x()<=canvasTopLeft.x()+canvasSize.width() ) &&
-		    (mouseCoord.y()>=canvasTopLeft.y() && mouseCoord.y()<=canvasTopLeft.y()+canvasSize.height())
-			)
-		 canvas->mouseMoveEvent(event); 
-		 else if (canvas->isinner()) canvas->mouseLeaveEvent(); 
+		if (isMouseInsideCanvas(mouseCoord))
+				canvas->mouseMoveEvent(event); 
+		 else if (canvas->isMouseInside()) 
+				canvas->mouseLeaveEvent(); 
 	}
+	void mousePressEvent(QMouseEvent *event) override{
+		if (canvas->isMouseInside())
+			canvas->mousePressEvent(event); 
+	}		
 	void update_zoom() {
 		QTransform tform;
 		qreal scale = qreal(scalefactor) / scalefactorDiv;

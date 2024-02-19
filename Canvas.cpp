@@ -37,34 +37,63 @@
 	}
 
 	void Canvas::mouseLeaveEvent(){
-		innerCanvas=false;
+		isMouseInsideCanvas=false;
 		if (currentItem) {
 		getView()->scene()->removeItem(currentItem); 
 		delete(currentItem);
 		currentItem=nullptr;
 		}	
 	}
-		
+	toolType Canvas::getTool(){
+	MainWindow*      		MW 		   = static_cast<MainWindow*>(getView()->parent()->parent());
+	return MW->getTool() ;
+	}
 	
 	void Canvas::mouseMoveEvent(QMouseEvent *event){
-						innerCanvas=true;
-		QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
+						isMouseInsideCanvas=true;
+		QPointF 		cursorCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 											 getView()->mapToScene( event->pos() ).y());												 
-		auto      		MW 		   = static_cast<MainWindow*>(getView()->parent()->parent());
-		toolType tool = MW->getTool() ;
-
-		if (tool == toolType::line_solid){
-			if (!currentItem) {			
-				currentItem = new myline(QPointF(mouseCoord.x(),mouseCoord.y()));		
-				getView()->scene()->addItem(currentItem);
-			}			
-			else { 
-			currentItem->changefirstPointCoord(mouseCoord);			
-			}
+		qDebug()<<"mouseMoveEvent";
+		switch (getTool()) {
+			case toolType::line_solid:
+				{
+					
+				if (!currentItem) {			
+					currentItem = new myline(QPointF(cursorCoord.x(),cursorCoord.y()));							
+					getView()->scene()->addItem(currentItem);
+				}			
+				else { 
+					myline* line	= static_cast<myline*>(currentItem);
+					qDebug()<<"before "<<cursorCoord;
+					cursorCoord = myline::findObjectNearBy(cursorCoord,getView(),static_cast<myline*>(currentItem));
+					qDebug()<<"before "<<cursorCoord;
+					if (line->getMode()==0) line->changefirstPointCoord(cursorCoord);
+						else
+					if (line->getMode()==1) line->changesecondPointCoord(cursorCoord);			
+				}	
+			}	
 		}	
 	}
 	
-	bool Canvas::isinner() {return innerCanvas;}
+	bool Canvas::isMouseInside() {return isMouseInsideCanvas;}
 	
 	View* Canvas::getView() const  {return view;}
+	
+	void Canvas::mousePressEvent(QMouseEvent * event) {
+			qDebug()<<"mousePressEvent";		
+			switch (getTool()) {
+				case toolType::line_solid:{
+					QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
+														 getView()->mapToScene( event->pos() ).y());	
+					myline* line	= static_cast<myline*>(currentItem);						
+					line->changeMode();
+					line->changesecondPointCoord(mouseCoord);				
+					if (line->getMode()>1) currentItem=nullptr;					
+					break;
+				}			
+			}	
+		}
+
+		
+	
 	

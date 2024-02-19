@@ -7,15 +7,11 @@ struct item_base {
 	virtual QJsonObject to_JSON() const = 0;
 	QPen get_pen(qint8 style , qint8 width);
 }; 
-
-class MyQGraphicsItem : public QGraphicsItem {
-	public:
-			virtual void changefirstPointCoord(QPointF) = 0;
-};
-
-class myline final: public item_base,public MyQGraphicsItem { 
+class View;
+class myline final: public item_base,public QGraphicsItem { 
 	qint8 				mode;
 	QPointF 			firstPoint;
+	QPointF 			secondPoint;
 	public:	
 	enum { Type = 600 };
 	QJsonObject to_JSON() const;
@@ -23,6 +19,11 @@ class myline final: public item_base,public MyQGraphicsItem {
 	myline(QPointF);
 	QRectF boundingRect() const override;
 	void changefirstPointCoord(QPointF);
+	void changesecondPointCoord(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+	void changeMode(); 
 	int type() const override { return Type; }
+	static QPointF findObjectNearBy(QPointF , View * , myline *);
+	qint8 getMode();
+
 };

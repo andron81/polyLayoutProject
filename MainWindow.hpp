@@ -49,8 +49,8 @@ public:
 	const QVector<itemsButtonType> toolButtons = {
 		{"Редактировать", "tool_edit.svg", 	 &MainWindow::acttool_edit,true},
 		{"Размер",	 "tool_size.svg",&MainWindow::acttool_size,true},
-		{"Сплошная линия","tool_line_solid.svg",&MainWindow::acttool_dotted_line,true},
-		{"Пунктирная линия","tool_line_dashed.svg"	 ,&MainWindow::acttool_solid_line,true},		
+		{"Сплошная линия","tool_line_solid.svg",&MainWindow::acttool_solid_line,true},
+		{"Пунктирная линия","tool_line_dashed.svg"	 ,&MainWindow::acttool_dotted_line,true},		
 		{"Текст","tool_text.svg"	,&MainWindow::acttool_text,true}
 	};
 	const QVector<itemsButtonType> modifyactButtons = {
