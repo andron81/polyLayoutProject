@@ -64,34 +64,61 @@ QPen item_base::get_pen(qint8 style , qint8 width){
 			json["y2"]=line.y2();*/
 		return json;
 	};
+QLineF myline::line() {return {firstPoint,secondPoint};}
 
- QPointF myline::findObjectNearBy(QPointF currentMouseCord, View * view, myline * myln = nullptr){
-	QList<QGraphicsItem *> 			itemList = view->items();	
-	int 							sz=itemList.size();	
-	bool 							loca; //location of line (vert or hori)				
-	QLineF 							line;
-	bool 							locaLine;
-	qint8 							minDistance=100;
-	QPointF 						res;		
-		for (qsizetype i = 0; i < sz; i++) { 
-			QGraphicsItem* item=itemList.at(i);		
-			if (item->type()==600 && item!=myln) {	// is item line ?
-			qDebug()<<item;
-			QGraphicsLineItem * tmpLine = static_cast<QGraphicsLineItem *>( item );	
+
+//////////////////////////
+	
+	QPointF myline::findObjectNearBy(QPointF secondPoint_) {
+		int 							step = 10;
+		QPointF 						result = secondPoint_;
+		bool 							loca; //location of line (vert or hori)		
+		QList<QGraphicsItem *> 			itemList = scene()->views()[0]->items();
+		int 							sz=itemList.size();			
+		if (abs(firstPoint.x()-result.x()) < abs(firstPoint.y() - 
+			result.y())) {result.setX(firstPoint.x()); loca=true; }
+			else {result.setY(firstPoint.y()); loca=false; }		
+		/////
+		for (qsizetype i = 1; i < sz; i++) { 
+			QGraphicsItem* item=itemList.at(i);							
+			if (item->type()==600) {							
+				myline * tmpLine = static_cast<myline *>( item );				
 				QLineF linecoord = tmpLine->line();
-					loca = (linecoord.x1()==linecoord.x2());
-					if (loca && minDistance>=abs(currentMouseCord.x()-linecoord.x1()) && ((currentMouseCord.x()+10>=linecoord.x1() && currentMouseCord.x()<=linecoord.x1()) || (currentMouseCord.x()-10<=linecoord.x1() && currentMouseCord.x()>=linecoord.x1())) ) {
-						minDistance = abs(currentMouseCord.x()-linecoord.x1()); 
-						line=linecoord; 
-						locaLine=loca;
-						} 
-					if (!loca && abs(currentMouseCord.y()-linecoord.y1()) && ((currentMouseCord.y()+10>=linecoord.y1() && currentMouseCord.y()<=linecoord.y1()) || (currentMouseCord.y()-10<=linecoord.y1() && currentMouseCord.y()>=linecoord.y1())) )  {						
-						minDistance = abs(currentMouseCord.y()-linecoord.y1()); 
-						line=linecoord; locaLine=loca; }				
-			}				
+				linecoord.setP1(linecoord.p1() +item->pos());
+				linecoord.setP2(linecoord.p2() +item->pos());
+				qreal minX = std::min(linecoord.x1(),linecoord.x2());
+				qreal minY = std::min(linecoord.y1(),linecoord.y2());
+				qreal maxX = std::max(linecoord.x1(),linecoord.x2());
+				qreal maxY = std::max(linecoord.y1(),linecoord.y2());
+				if (secondPoint_.x()+step >=linecoord.x1() && secondPoint_.x()<=linecoord.x1() && !loca && (linecoord.x1()==linecoord.x2() ) 
+					&& secondPoint_.y()>=minY
+					&& secondPoint_.y()<=maxY  )  
+					{					
+					result.setX(linecoord.x1()); break;
+					} else
+				if (secondPoint_.x()-step <=linecoord.x1() && secondPoint_.x()>=linecoord.x1() && !loca && (linecoord.x1()==linecoord.x2()) 
+					&& secondPoint_.y()>=minY
+					&& secondPoint_.y()<=maxY)  
+					{					
+					result.setX(linecoord.x1()); break;
+					} 
+					else
+				if (secondPoint_.y()+step >=linecoord.y1() && secondPoint_.y()<=linecoord.y1() && loca && (linecoord.y1()==linecoord.y2())  
+					&& secondPoint_.x()>=minX
+					&& secondPoint_.x()<=maxX) 
+					{					
+					result.setY(linecoord.y1());break;
+					} 
+					else
+				if (secondPoint_.y()-step <=linecoord.y1() && secondPoint_.y()>=linecoord.y1() && loca && (linecoord.y1()==linecoord.y2()) 
+					&& secondPoint_.x()>=minX
+					&& secondPoint_.x()<=maxX)  
+					{					
+					result.setY(linecoord.y1()); break;}
+					} 
+				} //for
+				if (!(result.x()==firstPoint.x() || result.y()==firstPoint.y()))  result = secondPoint_;			
+				return result;
 		}
-		
-	if (minDistance==100) res=QPointF(currentMouseCord.x(),currentMouseCord.y()); else
-	if (locaLine) res= QPointF(line.x1(),currentMouseCord.y() ); else res= QPointF(currentMouseCord.x(),line.y1() );
-	return res;
-}
+
+

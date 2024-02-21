@@ -64,12 +64,12 @@
 				}			
 				else { 
 					myline* line	= static_cast<myline*>(currentItem);
-					qDebug()<<"before "<<cursorCoord;
-					cursorCoord = myline::findObjectNearBy(cursorCoord,getView(),static_cast<myline*>(currentItem));
-					qDebug()<<"before "<<cursorCoord;
+					cursorCoord=line->findObjectNearBy(cursorCoord);
+					
 					if (line->getMode()==0) line->changefirstPointCoord(cursorCoord);
 						else
 					if (line->getMode()==1) line->changesecondPointCoord(cursorCoord);			
+					
 				}	
 			}	
 		}	

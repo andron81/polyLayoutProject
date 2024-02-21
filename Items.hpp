@@ -1,6 +1,13 @@
 #pragma once
 enum types { e_line_solid = QGraphicsItem::UserType + 1, e_line_dashed, e_text, e_size };
 
+	struct point_and_QGraphicsItem{
+	QGraphicsItem* item;
+	QPointF point;
+	QLineF firstCoord;	
+};
+
+
 struct item_base {
 	item_base();
 	virtual int type() const = 0;
@@ -21,9 +28,11 @@ class myline final: public item_base,public QGraphicsItem {
 	void changefirstPointCoord(QPointF);
 	void changesecondPointCoord(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-	void changeMode(); 
+	void changeMode();
+	QLineF line();
 	int type() const override { return Type; }
-	static QPointF findObjectNearBy(QPointF , View * , myline *);
+	//point_and_QGraphicsItem findObjectNearBy(QPointF);
+	QPointF findObjectNearBy(QPointF);
 	qint8 getMode();
 
 };
