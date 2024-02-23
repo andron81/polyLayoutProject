@@ -1,5 +1,6 @@
 #pragma once
-enum types { e_line_solid = QGraphicsItem::UserType + 1, e_line_dashed, e_text, e_size };
+#include "MainWindow.hpp"
+//enum types { e_line_solid = QGraphicsItem::UserType + 1, e_line_dashed, e_text, e_size };
 
 	struct point_and_QGraphicsItem{
 	QGraphicsItem* item;
@@ -9,21 +10,22 @@ enum types { e_line_solid = QGraphicsItem::UserType + 1, e_line_dashed, e_text, 
 
 
 struct item_base {
-	item_base();
+	MainWindow* mw;
+	item_base(MainWindow* mw_);
 	virtual int type() const = 0;
 	virtual QJsonObject to_JSON() const = 0;
-	QPen get_pen(qint8 style , qint8 width);
+	QPen get_pen(qint8 , qint8 , qint64 );
 }; 
 class View;
 class myline final: public item_base,public QGraphicsItem { 
-	qint8 				mode;
-	QPointF 			firstPoint;
-	QPointF 			secondPoint;
+	qint8 						mode;
+	QPointF 					firstPoint;
+	QPointF 					secondPoint;
 	public:	
 	enum { Type = 600 };
 	QJsonObject to_JSON() const;
 	//myline(QLineF, int ,int, QWidget);
-	myline(QPointF);
+	myline(MainWindow* mw, QPointF);
 	QRectF boundingRect() const override;
 	void changefirstPointCoord(QPointF);
 	void changesecondPointCoord(QPointF);
@@ -34,5 +36,4 @@ class myline final: public item_base,public QGraphicsItem {
 	//point_and_QGraphicsItem findObjectNearBy(QPointF);
 	QPointF findObjectNearBy(QPointF);
 	qint8 getMode();
-
 };

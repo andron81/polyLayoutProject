@@ -1,7 +1,8 @@
 #include "View.hpp"
 #include "MainWindow.hpp"
+#include "Canvas.hpp"
 toolType View::getTool() {
-	MainWindow * 				mw = static_cast<MainWindow *>(parent()->parent()->parent()); 
+	if (!mw) mw = static_cast<MainWindow *>(parent()->parent());	
 	return mw->getTool();
 }
 

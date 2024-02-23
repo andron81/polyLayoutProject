@@ -1,18 +1,12 @@
 #include "MainWindow.hpp"
+#include "AppSettings.hpp"
+#include "View.hpp"
 
 MainWindow::MainWindow()
-		:QMainWindow( nullptr ), 
+		:settings(new AppSettings), 
+		 QMainWindow( nullptr ), 
 		 editBlk({new QWidget( nullptr ),nullptr,new QLineEdit( nullptr ),new QLabel("Размер (мм.):")})
 		 {
-		QStringList cmdline_args = QCoreApplication::arguments();
-		//qDebug()<<cmdline_args[0];
-		setWindowState(Qt::WindowMaximized);
-		resize( 1280, 720 );
-		//	hs="100x100";	
-			setGeometry( QRect(0,23,2560,1377)); 
-			//move( screen()->geometry().center() - frameGeometry().center() );
-
-	
 	auto addRootItemMenu { [=](QString menuText, QMenuBar * MB, QVector<itemsMenuType> items ){
 		QMenu * menuL0 = new QMenu(menuText);
 		for (auto i : items){				
@@ -35,6 +29,11 @@ MainWindow::MainWindow()
 							}
 			} 
 		};
+		
+		QStringList cmdline_args = QCoreApplication::arguments();
+		setWindowState(Qt::WindowMaximized);
+		resize( 1280, 720 );
+		setGeometry( (*settings)["geometry"].toRect() );
 		QMenuBar * mainMenu = new QMenuBar;
 		addRootItemMenu ("Файл", mainMenu, filemenuItems);
 		setMenuBar(mainMenu);
@@ -70,6 +69,9 @@ MainWindow::MainWindow()
 	}
 	toolType MainWindow::getTool() {
 		return currentActiveTool;
+	}
+	AppSettings	* MainWindow::getSettings(){
+		return settings;
 	}
 	void MainWindow::actOpen() {
 		editBlk.setVisible(false);

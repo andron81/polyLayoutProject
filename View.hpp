@@ -1,13 +1,14 @@
 #pragma once
-#include "Canvas.hpp"
 
-
+class MainWindow;
+class Canvas;
 
 class View : public QGraphicsView {
 	const int			scalefactorMin		= 1;
 	const int			scalefactorMax		= 200;
 	const int			scalefactorDiv		= 10;
 	int					scalefactor			= scalefactorDiv;
+	MainWindow * 		mw					=nullptr;
 	Canvas * 			canvas;
 	QGraphicsItem* 		currentItem			=nullptr;
 	public:

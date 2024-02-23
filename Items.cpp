@@ -1,8 +1,10 @@
 #include "Items.hpp"
 #include "View.hpp"
-item_base::item_base(){};
+#include "AppSettings.hpp"
+	item_base::item_base(MainWindow* mw_):mw(mw_) {	
+	}
 
-QPen item_base::get_pen(qint8 style , qint8 width){
+	QPen item_base::get_pen(qint8 style , qint8 width , qint64 color ){
 	QPen pen;
 		switch (style) {
 			case 1: pen.setStyle(Qt::SolidLine);break;
@@ -11,26 +13,42 @@ QPen item_base::get_pen(qint8 style , qint8 width){
 			case 4: pen.setStyle(Qt::DashDotLine);break;						
 		}
 		pen.setWidth(width);
+		qDebug()<<"color="<<color;
+		pen.setColor(color);
 		return pen;
-};
-//myline::myline(QLineF coord, int style,int width , QGraphicsLineItem* parent_):	
-//	QGraphicsLineItem(coord,parent_){
-//	setPen(get_pen(style , width));	
-//};
-	//QPointF myline::getMouseCoord(){}
-	myline::myline(QPointF firstPoint_):mode(0),item_base(),firstPoint(firstPoint_){}	
+	};
+
+	myline::myline(MainWindow* mw_,QPointF firstPoint_):mode(0),item_base(mw_),firstPoint(firstPoint_){
+		
+		}	
 	void myline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-			qDebug()<<mode<<" "<<secondPoint.x() << ","<<secondPoint.y()			;		
+			//qDebug()<<mode<<" "<<secondPoint.x() << ","<<secondPoint.y()			;		
 		switch  ( mode ) {
-			case  0:					
+			case  0:
+				//painter->setPen(
+				//get_pen(1,mw->getSettings()->getValue("lineWidth").toInt(),
+				//		  mw->getSettings()->getValue("lineColorDefault").toInt() ));
+				
 				painter->drawEllipse(firstPoint.x(),firstPoint.y() ,5,5);				
 			break;
 			case  1:
+			qDebug()<<mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16);
+							painter->setPen(
+				get_pen(1,mw->getSettings()->getValue("lineWidth").toInt(),
+						  mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16)));
 				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());
 				painter->drawEllipse(secondPoint.x(),secondPoint.y() ,5,5);
+
 			break;
 			case  2:
-				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());				
+
+							painter->setPen(
+				get_pen(1,mw->getSettings()->getValue("lineWidth").toInt(),
+						  mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16)));
+
+
+				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());	
+		  
 			break;
 
 			

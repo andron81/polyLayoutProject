@@ -1,10 +1,10 @@
 #pragma once
 #include "VectorDraw_pch.hpp"
-#include "View.hpp"
 
 
-
-struct editBlock{
+class View;
+class AppSettings;
+struct editBlock{	
 	QWidget* 					widgetmodifyAct;
 	QVBoxLayout*	    		layoutmodifyAct;
 	QLineEdit* 					lineEdit;
@@ -15,6 +15,7 @@ struct editBlock{
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT	
+	AppSettings	*				settings;
 	QGraphicsScene *			scene;
 	View *						view;
 	toolType 					currentActiveTool		=	toolType::none;
@@ -40,6 +41,7 @@ public slots:
 	void actarrow_down();
 public: 
 	toolType getTool();
+	AppSettings	* getSettings();
 	const QVector<itemsMenuType> filemenuItems = {
 		{"Открыть",  	 &MainWindow::actOpen},
 		{"Сохранить",	 &MainWindow::actSave},

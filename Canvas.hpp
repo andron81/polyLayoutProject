@@ -21,5 +21,5 @@ public:
 	void mouseLeaveEvent();
 	void mouseMoveEvent(QMouseEvent *);
 	void mousePressEvent(QMouseEvent *);
-	toolType getTool();	
+	
 }; // class view_canvas

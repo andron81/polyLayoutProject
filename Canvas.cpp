@@ -1,7 +1,8 @@
+#include "MainWindow.hpp"
 #include "Canvas.hpp"
 #include "View.hpp"
 #include "Items.hpp"
-#include "MainWindow.hpp"
+
 	
 	Canvas::Canvas(View* view_ ):view(view_)  {
 		setFlag( QGraphicsItem::ItemStacksBehindParent );
@@ -13,8 +14,7 @@
 		effect->setOffset( 0 );
 		effect->setColor( QColor( 64, 64, 64 ) );
 		setGraphicsEffect( effect );
-		setFiltersChildEvents(true);
-		getView()->getTool();		
+		setFiltersChildEvents(true);				
 	}
 	
 	QPointF Canvas::getTopLeft() const  {
@@ -44,22 +44,26 @@
 		currentItem=nullptr;
 		}	
 	}
-	toolType Canvas::getTool(){
+	/*toolType Canvas::getTool(){
 	MainWindow*      		MW 		   = static_cast<MainWindow*>(getView()->parent()->parent());
 	return MW->getTool() ;
-	}
+	}*/
 	
 	void Canvas::mouseMoveEvent(QMouseEvent *event){
 						isMouseInsideCanvas=true;
+						qDebug()<<getView();
+						qDebug()<<"mouseMoveEvent "<<(int)(getView()->getTool());
+
 		QPointF 		cursorCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 											 getView()->mapToScene( event->pos() ).y());												 
-		qDebug()<<"mouseMoveEvent";
-		switch (getTool()) {
+		switch (getView()->getTool()) {
 			case toolType::line_solid:
 				{
 					
-				if (!currentItem) {			
-					currentItem = new myline(QPointF(cursorCoord.x(),cursorCoord.y()));							
+				if (!currentItem) {	
+					qDebug()<<getView()->parent()->parent();				
+					currentItem = new myline(static_cast<MainWindow*>(getView()->parent()->parent()),
+					QPointF(cursorCoord.x(),cursorCoord.y()));							
 					getView()->scene()->addItem(currentItem);
 				}			
 				else { 
@@ -81,7 +85,7 @@
 	
 	void Canvas::mousePressEvent(QMouseEvent * event) {
 			qDebug()<<"mousePressEvent";		
-			switch (getTool()) {
+			switch (getView()->getTool()) {
 				case toolType::line_solid:{
 					QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 														 getView()->mapToScene( event->pos() ).y());	
