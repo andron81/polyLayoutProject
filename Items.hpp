@@ -11,13 +11,14 @@
 
 struct item_base {
 	MainWindow* mw;
+	QPen pen;
 	item_base(MainWindow* mw_);
 	virtual int type() const = 0;
 	virtual QJsonObject to_JSON() const = 0;
-	QPen get_pen(qint8 , qint8 , qint64 );
+	QPen getPen(toolType , qint8 , qint64 );
 }; 
 class View;
-class myline final: public item_base,public QGraphicsItem { 
+class Myline : public item_base,public QGraphicsItem { 
 	qint8 						mode;
 	QPointF 					firstPoint;
 	QPointF 					secondPoint;
@@ -25,10 +26,11 @@ class myline final: public item_base,public QGraphicsItem {
 	enum { Type = 600 };
 	QJsonObject to_JSON() const;
 	//myline(QLineF, int ,int, QWidget);
-	myline(MainWindow* mw, QPointF);
+	Myline(MainWindow* mw, QPointF);
 	QRectF boundingRect() const override;
 	void changefirstPointCoord(QPointF);
 	void changesecondPointCoord(QPointF);
+	void changePoints(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	void changeMode();
 	QLineF line();
@@ -37,3 +39,8 @@ class myline final: public item_base,public QGraphicsItem {
 	QPointF findObjectNearBy(QPointF);
 	qint8 getMode();
 };
+
+class Size : public Myline {
+	public:
+	Size(MainWindow* mw, QPointF);	
+};	

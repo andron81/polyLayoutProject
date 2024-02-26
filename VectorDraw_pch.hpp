@@ -38,4 +38,4 @@
 #include <QWheelEvent>
 #include <QIntValidator>
 
-enum class toolType { none, edit, line_solid, line_dashed, text, size};
+enum class toolType { none, edit, line_solid = 600, line_dashed = 601, text = 602, size = 603};

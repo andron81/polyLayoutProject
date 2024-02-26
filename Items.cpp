@@ -1,52 +1,40 @@
 #include "Items.hpp"
 #include "View.hpp"
 #include "AppSettings.hpp"
-	item_base::item_base(MainWindow* mw_):mw(mw_) {	
-	}
+	item_base::item_base(MainWindow* mw_):mw(mw_) {	}
 
-	QPen item_base::get_pen(qint8 style , qint8 width , qint64 color ){
+	QPen item_base::getPen(toolType style , qint8 width , qint64 color ){
 	QPen pen;
 		switch (style) {
-			case 1: pen.setStyle(Qt::SolidLine);break;
-			case 2: pen.setStyle(Qt::DashLine);break;
-			case 3: pen.setStyle(Qt::DotLine);break;
-			case 4: pen.setStyle(Qt::DashDotLine);break;						
+			case toolType::line_solid: pen.setStyle(Qt::SolidLine);break;
+			case toolType::line_dashed: pen.setStyle(Qt::DashLine);break;
 		}
 		pen.setWidth(width);
-		qDebug()<<"color="<<color;
 		pen.setColor(color);
 		return pen;
 	};
 
-	myline::myline(MainWindow* mw_,QPointF firstPoint_):mode(0),item_base(mw_),firstPoint(firstPoint_){
+	Myline::Myline(MainWindow* mw_,QPointF firstPoint_):mode(0),item_base(mw_),firstPoint(firstPoint_){
 		
 		}	
-	void myline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-			//qDebug()<<mode<<" "<<secondPoint.x() << ","<<secondPoint.y()			;		
+	void Myline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+		
 		switch  ( mode ) {
 			case  0:
-				//painter->setPen(
-				//get_pen(1,mw->getSettings()->getValue("lineWidth").toInt(),
-				//		  mw->getSettings()->getValue("lineColorDefault").toInt() ));
-				
-				painter->drawEllipse(firstPoint.x(),firstPoint.y() ,5,5);				
+				painter->drawEllipse(firstPoint.x(),firstPoint.y() ,5,5);
+				pen = getPen(mw->getTool(),
+							 mw->getSettings()->getValue("lineWidth").toInt(),
+							 mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
 			break;
-			case  1:
-			qDebug()<<mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16);
-							painter->setPen(
-				get_pen(1,mw->getSettings()->getValue("lineWidth").toInt(),
-						  mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16)));
-				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());
+			case  1:			
 				painter->drawEllipse(secondPoint.x(),secondPoint.y() ,5,5);
+				painter->setPen(pen);
+				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());
+				
 
 			break;
 			case  2:
-
-							painter->setPen(
-				get_pen(1,mw->getSettings()->getValue("lineWidth").toInt(),
-						  mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16)));
-
-
+				painter->setPen(pen);
 				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());	
 		  
 			break;
@@ -54,23 +42,23 @@
 			
 		}
 	};	
-    QRectF myline::boundingRect() const{        
+    QRectF Myline::boundingRect() const{        
 	        return QRectF(0, 0,1800,2800);
 	}
-	void myline::changeMode() {        
-			mode++;
+	void Myline::changeMode() {        
+			if (mode<3) mode++;
 			update();
 	}
-	qint8 myline::getMode(){return mode;}
-	void myline::changefirstPointCoord(QPointF point_) {
+	qint8 Myline::getMode(){return mode;}
+	void Myline::changefirstPointCoord(QPointF point_) {
 	if (mode==0) firstPoint=point_;
 	update();
 	}
-	void myline::changesecondPointCoord(QPointF point_) {
+	void Myline::changesecondPointCoord(QPointF point_) {
 	if (mode==1) secondPoint=point_;
 	update();
 	}
-	QJsonObject myline::to_JSON() const {
+	QJsonObject Myline::to_JSON() const {
 			QJsonObject json;
 			/*QLineF line=this->line();
 			json["type"] = type();
@@ -82,12 +70,12 @@
 			json["y2"]=line.y2();*/
 		return json;
 	};
-QLineF myline::line() {return {firstPoint,secondPoint};}
+QLineF Myline::line() {return {firstPoint,secondPoint};}
 
 
 //////////////////////////
 	
-	QPointF myline::findObjectNearBy(QPointF secondPoint_) {
+	QPointF Myline::findObjectNearBy(QPointF secondPoint_) {
 		int 							step = 10;
 		QPointF 						result = secondPoint_;
 		bool 							loca; //location of line (vert or hori)		
@@ -100,7 +88,7 @@ QLineF myline::line() {return {firstPoint,secondPoint};}
 		for (qsizetype i = 1; i < sz; i++) { 
 			QGraphicsItem* item=itemList.at(i);							
 			if (item->type()==600) {							
-				myline * tmpLine = static_cast<myline *>( item );				
+				Myline * tmpLine = static_cast<Myline *>( item );				
 				QLineF linecoord = tmpLine->line();
 				linecoord.setP1(linecoord.p1() +item->pos());
 				linecoord.setP2(linecoord.p2() +item->pos());
@@ -138,5 +126,15 @@ QLineF myline::line() {return {firstPoint,secondPoint};}
 				if (!(result.x()==firstPoint.x() || result.y()==firstPoint.y()))  result = secondPoint_;			
 				return result;
 		}
+		void Myline::changePoints(QPointF cursorCoord){			
+			cursorCoord=findObjectNearBy(cursorCoord);					
+			if (mode==0) changefirstPointCoord(cursorCoord);
+				else
+			if (mode==1) changesecondPointCoord(cursorCoord);
+		}
+
+		Size::Size(MainWindow* mw, QPointF firstPoint_):Myline(mw , firstPoint_){
+
+		}	
 
 

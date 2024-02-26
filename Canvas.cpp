@@ -51,31 +51,38 @@
 	
 	void Canvas::mouseMoveEvent(QMouseEvent *event){
 						isMouseInsideCanvas=true;
-						qDebug()<<getView();
-						qDebug()<<"mouseMoveEvent "<<(int)(getView()->getTool());
-
 		QPointF 		cursorCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
-											 getView()->mapToScene( event->pos() ).y());												 
-		switch (getView()->getTool()) {
-			case toolType::line_solid:
-				{
-					
-				if (!currentItem) {	
-					qDebug()<<getView()->parent()->parent();				
-					currentItem = new myline(static_cast<MainWindow*>(getView()->parent()->parent()),
-					QPointF(cursorCoord.x(),cursorCoord.y()));							
-					getView()->scene()->addItem(currentItem);
-				}			
-				else { 
-					myline* line	= static_cast<myline*>(currentItem);
-					cursorCoord=line->findObjectNearBy(cursorCoord);
-					
-					if (line->getMode()==0) line->changefirstPointCoord(cursorCoord);
-						else
-					if (line->getMode()==1) line->changesecondPointCoord(cursorCoord);			
-					
-				}	
+											 getView()->mapToScene( event->pos() ).y());
+		if (!currentItem) {
+		qDebug()<<"Yes here"			;
+			switch (getView()->getTool()) {
+				case toolType::line_solid: case toolType::line_dashed:	{
+					 currentItem = new Myline(static_cast<MainWindow*>(getView()->parent()->parent()),
+										 QPointF(cursorCoord.x(),cursorCoord.y()));							
+				break;
+				}
+				case toolType::size:{
+					currentItem = new Size(static_cast<MainWindow*>(getView()->parent()->parent()),
+										 QPointF(cursorCoord.x(),cursorCoord.y()));							
+				break;	
+				}				
+			}
+		getView()->scene()->addItem(currentItem);		
+		}
+		else { 
+			switch (getView()->getTool()) {
+				case toolType::line_solid: case toolType::line_dashed:	{
+					Myline* aLine	= static_cast<Myline*>(currentItem);
+					aLine->changePoints(cursorCoord);
+					break;
+				}
+				case toolType::size: {
+					Size* aSize	= static_cast<Size*>(currentItem);
+					aSize->changePoints(cursorCoord);
+					break;
+				}
 			}	
+											
 		}	
 	}
 	
@@ -86,15 +93,18 @@
 	void Canvas::mousePressEvent(QMouseEvent * event) {
 			qDebug()<<"mousePressEvent";		
 			switch (getView()->getTool()) {
-				case toolType::line_solid:{
+				case toolType::line_solid:
+				case toolType::line_dashed:{
 					QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 														 getView()->mapToScene( event->pos() ).y());	
-					myline* line	= static_cast<myline*>(currentItem);						
+					Myline* line	= static_cast<Myline*>(currentItem);						
 					line->changeMode();
-					line->changesecondPointCoord(mouseCoord);				
+					line->changesecondPointCoord(mouseCoord);
+							
 					if (line->getMode()>1) currentItem=nullptr;					
 					break;
-				}			
+				}
+				case toolType::size: {break;} 
 			}	
 		}
 
