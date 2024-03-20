@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QDebug>
 
 #include <QApplication>
@@ -38,4 +37,5 @@
 #include <QWheelEvent>
 #include <QIntValidator>
 
-enum class toolType { none, edit, line_solid = 600, line_dashed = 601, text = 602, size = 603};
+enum class ToolType { none, edit, line_solid = 600, line_dashed = 601, text = 602, size = 603};
+enum class EditBlockVisible { none, changeLength, changeText};

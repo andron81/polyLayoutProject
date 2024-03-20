@@ -2,6 +2,7 @@
 #include "Canvas.hpp"
 #include "View.hpp"
 #include "Items.hpp"
+#include "math.h"
 
 	
 	Canvas::Canvas(View* view_ ):view(view_)  {
@@ -38,7 +39,7 @@
 
 	void Canvas::mouseLeaveEvent(){
 		isMouseInsideCanvas=false;
-		if (currentItem) {
+		if (currentItem && getTool()!=ToolType::edit) {
 		getView()->scene()->removeItem(currentItem); 
 		delete(currentItem);
 		currentItem=nullptr;
@@ -53,61 +54,190 @@
 						isMouseInsideCanvas=true;
 		QPointF 		cursorCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 											 getView()->mapToScene( event->pos() ).y());
-		if (!currentItem) {
-		qDebug()<<"Yes here"			;
-			switch (getView()->getTool()) {
-				case toolType::line_solid: case toolType::line_dashed:	{
-					 currentItem = new Myline(static_cast<MainWindow*>(getView()->parent()->parent()),
-										 QPointF(cursorCoord.x(),cursorCoord.y()));							
-				break;
-				}
-				case toolType::size:{
-					currentItem = new Size(static_cast<MainWindow*>(getView()->parent()->parent()),
-										 QPointF(cursorCoord.x(),cursorCoord.y()));							
-				break;	
-				}				
+		MainWindow* MW = static_cast<MainWindow*>(getView()->parent()->parent());											
+		switch (getTool()){
+		case ToolType::line_solid: case ToolType::line_dashed:	{
+			if (!currentItem) {
+					currentItem = new Myline(MW, QPointF(cursorCoord.x(),cursorCoord.y()));
+					getView()->scene()->addItem(currentItem);
 			}
-		getView()->scene()->addItem(currentItem);		
+			else static_cast<Myline*>(currentItem)->changePoints(cursorCoord);
+		break;
 		}
-		else { 
-			switch (getView()->getTool()) {
-				case toolType::line_solid: case toolType::line_dashed:	{
-					Myline* aLine	= static_cast<Myline*>(currentItem);
-					aLine->changePoints(cursorCoord);
-					break;
-				}
-				case toolType::size: {
-					Size* aSize	= static_cast<Size*>(currentItem);
-					aSize->changePoints(cursorCoord);
-					break;
-				}
-			}	
-											
+		case ToolType::size:	{
+			if (!currentItem) {
+				
+					currentItem = new Size(MW,
+										 QPointF(cursorCoord.x(),cursorCoord.y()));
+					getView()->scene()->addItem(currentItem);	
+					
+					
+			}
+			else 
+					static_cast<Size*>(currentItem)->changePoints(cursorCoord);
+		break;
+			}
+		case ToolType::text:	{
+			
+			if (!currentItem) {
+				
+					currentItem = new Text(
+										 MW,
+										 QPointF(cursorCoord.x(),cursorCoord.y())
+										  );
+					
+					getView()->scene()->addItem(currentItem);					 
+					
+
+			}
+			else
+			static_cast<Text*>(currentItem)->changePoints(cursorCoord);
+			
+	
+		break;		
+			}
+		
 		}	
 	}
 	
 	bool Canvas::isMouseInside() {return isMouseInsideCanvas;}
 	
 	View* Canvas::getView() const  {return view;}
-	
+
+	void Canvas::select(bool flag) {
+		QColor tmpColor;
+		if (currentItem && getTool()==ToolType::edit) {
+			MainWindow* MW = static_cast<MainWindow*>(getView()->parent()->parent());
+			if (flag) tmpColor=QColor(MW->getSettings()->getValue("lineColorSelected").toString().toInt(0, 16));
+				else 
+			tmpColor=QColor(MW->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
+
+			switch (currentItem->type()){
+							case 600:
+								static_cast<Myline*>(currentItem)->setColor(tmpColor);
+							break;
+							case 603:
+								static_cast<Size*>(currentItem)->setColor(tmpColor);
+							break;
+							case 602:
+								static_cast<Text*>(currentItem)->setColor(tmpColor);
+							break;							
+						}
+					if (!flag)	currentItem =nullptr;		 //if unselect
+		}
+	}
+	ToolType Canvas::getTool(){return getView()->getTool();}
 	void Canvas::mousePressEvent(QMouseEvent * event) {
-			qDebug()<<"mousePressEvent";		
-			switch (getView()->getTool()) {
-				case toolType::line_solid:
-				case toolType::line_dashed:{
-					QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
-														 getView()->mapToScene( event->pos() ).y());	
+
+		QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
+											 getView()->mapToScene( event->pos() ).y());	
+			switch (getTool()) {
+				case ToolType::line_solid:
+				case ToolType::line_dashed:{
 					Myline* line	= static_cast<Myline*>(currentItem);						
 					line->changeMode();
-					line->changesecondPointCoord(mouseCoord);
-							
+					line->changesecondPointCoord(mouseCoord);							
 					if (line->getMode()>1) currentItem=nullptr;					
 					break;
 				}
-				case toolType::size: {break;} 
+				case ToolType::size: {					
+					Size* size	= static_cast<Size*>(currentItem);						
+					size->changeMode();
+					switch (size->getMode()){
+					case 1: size->changesecondPointCoord(mouseCoord); break;
+					case 2: size->changelastPointCoord(mouseCoord); break;		
+					case 3: currentItem=nullptr;	 break;		
+					}
+					break;
+				}
+				case ToolType::text: {
+					currentItem=nullptr;	
+					break;
+				}
+				case ToolType::edit: {
+					select(false);
+					point_and_QGraphicsItem  point = FindNearbyItem(mouseCoord);
+					if (point.item) {
+						currentItem = point.item;
+						select(true);						
+					}					
+					break;
+				}	
 			}	
 		}
 
-		
+	point_and_QGraphicsItem  Canvas::FindNearbyItem(const QPointF& mouseCoord) {
+				QList<QGraphicsItem *> itemList = view->items();
+				int sz=itemList.size();	
+				bool loca; //location of line (vert or hori)				
+				QLineF line;
+				bool locaLine;
+				qint8 minDistance=100;			
+			point_and_QGraphicsItem result{nullptr}; 
+			QLineF linecoord;
+			
+		for (qsizetype i = 0; i < sz; i++) { 
+			QGraphicsItem* item=itemList.at(i);	
+			if (item->type()==static_cast<int>(ToolType::text)) {	// is item a txt ?			
+				Text* tmpText = static_cast<Text*>( item );
+						//qDebug()<<item->topLeft();
+				QRectF r = tmpText->mapToScene(tmpText->boundingRect()).boundingRect();
+				QSizeF sz = r.size();
+				qreal w = sz.width();
+				qreal h = sz.height();
+					if (mouseCoord.x()>tmpText->pos().x() && mouseCoord.x()<tmpText->pos().x()+w &&
+						mouseCoord.y()>tmpText->pos().y() && mouseCoord.y()<tmpText->pos().y()+h
+					) {result.item = item;
+					minDistance=-1;}
+	
+				
+			} else
+			if (item->type()==static_cast<int>(ToolType::line_solid )) {	// is item a line ?
+			 Myline* tmpLine = static_cast<Myline *>( item );	
+				linecoord = tmpLine->line();
+				linecoord.setP1(linecoord.p1() +item->pos());
+				linecoord.setP2(linecoord.p2() +item->pos());
+					loca = (linecoord.x1()==linecoord.x2());
+					if (loca && minDistance>=abs(mouseCoord.x()-linecoord.x1()) && ((mouseCoord.x()+10>=linecoord.x1() && mouseCoord.x()<=linecoord.x1()) || (mouseCoord.x()-10<=linecoord.x1() && mouseCoord.x()>=linecoord.x1())) ) {
+						minDistance = abs(mouseCoord.x()-linecoord.x1()); 
+						result.item = item;
+						result.point = {mouseCoord.x(),mouseCoord.y()};
+						result.firstCoord = tmpLine->line();
+						locaLine=loca;
+						} 
+					if (!loca && abs(mouseCoord.y()-linecoord.y1()) && ((mouseCoord.y()+10>=linecoord.y1() && mouseCoord.y()<=linecoord.y1()) || (mouseCoord.y()-10<=linecoord.y1() && mouseCoord.y()>=linecoord.y1())) )  {						
+						minDistance = abs(mouseCoord.y()-linecoord.y1());
+						result.item = item;
+						result.point = {mouseCoord.x(),mouseCoord.y()};
+						result.firstCoord = tmpLine->line();
+						 locaLine=loca; }				
+			} else
+			if (item->type()==static_cast<int>(ToolType::size)) {	// is item a size element ?	
+				Size * tmpSize = static_cast<Size *>( item );	
+					QLineF linecoord = tmpSize->get_main_line();
+						loca = (linecoord.x1()==linecoord.x2());
+						
+					if (loca && minDistance>=abs(mouseCoord.x()-linecoord.x1()) && ((mouseCoord.x()+10>=linecoord.x1() && mouseCoord.x()<=linecoord.x1()) || (mouseCoord.x()-10<=linecoord.x1() && mouseCoord.x()>=linecoord.x1())) ) {
+						minDistance = abs(mouseCoord.x()-linecoord.x1()); 
+						result.item = item;
+						result.point = {mouseCoord.x(),mouseCoord.y()};
+						//result.firstCoord = tmpLine->line();
+						locaLine=loca;
+						}
+						else 
+					if (!loca && minDistance>=abs(mouseCoord.y()-linecoord.y1()) && ((mouseCoord.y()+10>=linecoord.y1() && mouseCoord.y()<=linecoord.y1()) || (mouseCoord.y()-10<=linecoord.y1() && mouseCoord.y()>=linecoord.y1())) ){
+						minDistance = abs(mouseCoord.y()-linecoord.y1()); 
+						result.item = item;
+						result.point = {mouseCoord.x(),mouseCoord.y()};
+						//result.firstCoord = tmpLine->line();
+						locaLine=loca;
+	
+						}
+					
+			}		
+				
+	}
+	if (minDistance==100) return {nullptr}; else {return result;}	
+	}		
 	
 	

@@ -1,11 +1,16 @@
 #include "MainWindow.hpp"
 #include "AppSettings.hpp"
 #include "View.hpp"
+#include "Canvas.hpp"
+
 
 MainWindow::MainWindow()
 		:settings(new AppSettings), 
 		 QMainWindow( nullptr ), 
-		 editBlk({new QWidget( nullptr ),nullptr,new QLineEdit( nullptr ),new QLabel("Размер (мм.):")})
+		 editBlk({new QWidget( nullptr ),nullptr,new QLineEdit( nullptr ),new QLabel,
+		 new QLineEdit( nullptr ),new QLabel("Текст"),
+				new QPushButton("Вращать")
+		 })
 		 {
 	auto addRootItemMenu { [=](QString menuText, QMenuBar * MB, QVector<itemsMenuType> items ){
 		QMenu * menuL0 = new QMenu(menuText);
@@ -29,7 +34,8 @@ MainWindow::MainWindow()
 							}
 			} 
 		};
-		
+		statusBar()->addWidget(new QLabel("Координаты"));
+		editBlk.widgetmodifyAct->setEnabled(false);
 		QStringList cmdline_args = QCoreApplication::arguments();
 		setWindowState(Qt::WindowMaximized);
 		resize( 1280, 720 );
@@ -54,10 +60,17 @@ MainWindow::MainWindow()
 		addButtons(editBlk.layoutmodifyAct,modifyactButtons,editBlk.widgetmodifyAct);		
 		editBlk.layoutmodifyAct->setContentsMargins( 0, 0,0,0);
 		layoutTools->addWidget(editBlk.widgetmodifyAct);
-		editBlk.setVisible(false);
-		editBlk.lineEdit->setFixedWidth( 70 );
-		layoutTools->addWidget(editBlk.editlabelText);
-		layoutTools->addWidget(editBlk.lineEdit);
+		editBlk.setVisible(EditBlockVisible::none);
+		//editBlk.lineEdit->setFixedWidth( 70 );
+		statusBar()->addWidget(editBlk.lineSizeLabel1);		
+		statusBar()->addWidget(editBlk.lineSizeEdit);
+		statusBar()->addWidget(editBlk.lineTextLabel2);
+		statusBar()->addWidget(editBlk.lineTextEdit);
+		editBlk.lineSizeEdit->setFixedWidth( 90 );
+		editBlk.lineTextEdit->setFixedWidth( 90 );
+		statusBar()->addWidget(editBlk.rotateButton);
+		
+
 		layoutTools->addStretch( 0 );	
 	//picture zone:
 		QWidget * widgetView = new QWidget(widget_main);
@@ -65,46 +78,57 @@ MainWindow::MainWindow()
 		scene = new QGraphicsScene( -1000/*x*/, -1000/*y*/, 2000/*w*/, 2000/*h*/, widgetView );
 		view = new View( scene, widgetView );		
 		layoutMain->addWidget( view );
+		
+		
+		
 		view->setFocus();
 	}
-	toolType MainWindow::getTool() {
-		return currentActiveTool;
+	ToolType MainWindow::getTool() {
+					return currentActiveTool;
 	}
 	AppSettings	* MainWindow::getSettings(){
 		return settings;
 	}
 	void MainWindow::actOpen() {
-		editBlk.setVisible(false);
+		view->getCanvas()->select(false);
+		editBlk.setVisible(EditBlockVisible::changeLength);
 	}
 	void MainWindow::actSave() {
-		editBlk.setVisible(true);
+		view->getCanvas()->select(false);
+		editBlk.setVisible(EditBlockVisible::changeText);
 	}
-	void MainWindow::actSaveAs() {
+	void MainWindow::actSaveAs() {				
+		view->getCanvas()->select(false);
 		qDebug()<<"SaveAs";
 	}
 	void MainWindow::actExit() {
 		qDebug()<<"Exit";
 	}
 	void MainWindow::acttool_edit() {
-		currentActiveTool = toolType::edit;
+		currentActiveTool = ToolType::edit;
 		qDebug()<<"tool_edit";
 	}
 	void MainWindow::acttool_size() {
-		currentActiveTool = toolType::size;
+		view->getCanvas()->select(false);
+		currentActiveTool = ToolType::size;
 		qDebug()<<"tool_size";
 	}
 	void MainWindow::acttool_dotted_line() {
-		currentActiveTool = toolType::line_dashed;
+		view->getCanvas()->select(false);
+		currentActiveTool = ToolType::line_dashed;
 		qDebug()<<"tool_dotted_line";
 	}
 	void MainWindow::acttool_solid_line() {
-		currentActiveTool = toolType::line_solid;
+		view->getCanvas()->select(false);
+		currentActiveTool = ToolType::line_solid;
 		qDebug()<<"tool_solid_line";
 	}
 	void MainWindow::acttool_remove() {
 		qDebug()<<"acttool_remove";
 	}
 	void MainWindow::acttool_text() {
+		view->getCanvas()->select(false);
+		currentActiveTool = ToolType::text;
 		qDebug()<<"acttool_text";
 	}
 
@@ -120,9 +144,38 @@ MainWindow::MainWindow()
 		qDebug()<<"actarrow_down";
 		}	
 	
-	
-	void editBlock::setVisible(bool flag) {
-		widgetmodifyAct->setEnabled(flag);
-		lineEdit->setVisible(flag);
-		editlabelText->setVisible(flag);
+
+	void EditBlock::setVisible(EditBlockVisible flag) {
+			
+		switch (flag) {
+			case EditBlockVisible::none: 
+				widgetmodifyAct->setEnabled(false);			
+				lineSizeEdit->setVisible(false);
+				lineSizeLabel1->setVisible(false);
+				lineTextEdit->setVisible(false);
+				lineTextLabel2->setVisible(false);
+				rotateButton->setVisible(false);
+			break;
+			case EditBlockVisible::changeLength :
+				widgetmodifyAct->setEnabled(true);	
+				setVisible(EditBlockVisible::none);
+				lineSizeEdit->setVisible(true);
+				lineSizeLabel1->setVisible(true);
+				lineSizeLabel1->setText("Размер (мм.): ");				
+				
+			break;
+			case EditBlockVisible::changeText :	
+				widgetmodifyAct->setEnabled(true);				
+				lineSizeEdit->setVisible(true);
+				lineSizeLabel1->setVisible(true);
+				lineSizeLabel1->setText("Размер текста: ");			
+				
+				lineTextEdit->setVisible(true);
+				lineTextLabel2->setVisible(true);;
+				rotateButton->setVisible(true);
+			
+			break;
+
+		}		
 	}
+	

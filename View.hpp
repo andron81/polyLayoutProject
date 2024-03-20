@@ -10,14 +10,15 @@ class View : public QGraphicsView {
 	int					scalefactor			= scalefactorDiv;
 	MainWindow * 		mw					=nullptr;
 	Canvas * 			canvas;
-	QGraphicsItem* 		currentItem			=nullptr;
+	QGraphicsItem* 	currentItem			=nullptr;
 	public:
 	//toolType getTool() {return static_cast<MainWindow>(mainWin)->getTool();}
-	toolType getTool() ;
+	ToolType getTool() ;
 	bool isMouseInsideCanvas(QPointF 	mouseCoord);
 	View( QGraphicsScene * p_scene, QWidget * p_parent );
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
 	void update_zoom();
 	void wheelEvent( QWheelEvent * p_event ) override ;
+	Canvas * getCanvas();
 };

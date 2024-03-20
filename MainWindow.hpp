@@ -2,27 +2,37 @@
 #include "VectorDraw_pch.hpp"
 
 
+
+
 class View;
 class AppSettings;
-struct editBlock{	
+struct EditBlock{	
 	QWidget* 					widgetmodifyAct;
 	QVBoxLayout*	    		layoutmodifyAct;
-	QLineEdit* 					lineEdit;
-	QLabel* 					editlabelText;
+	QLineEdit* 					lineSizeEdit;
+	QLabel* 					lineSizeLabel1;
+
+	QLineEdit* 					lineTextEdit;
+	QLabel* 					lineTextLabel2;
+	QPushButton*				rotateButton;
 	
-	void setVisible(bool flag);
+	void setVisible(EditBlockVisible);
 };
 
 class MainWindow : public QMainWindow {
+
+	typedef void (MainWindow::*funcactionType)();
+	struct itemsMenuType {QString itemsText; funcactionType action ;};
+	struct itemsButtonType {QString descr; QString iconfName; funcactionType action ; bool is_toggled;};
+
 	Q_OBJECT	
 	AppSettings	*				settings;
 	QGraphicsScene *			scene;
 	View *						view;
-	toolType 					currentActiveTool		=	toolType::none;
-	typedef void (MainWindow::*funcactionType)();
-	struct itemsMenuType {QString itemsText; funcactionType action ;};
-	struct itemsButtonType {QString descr; QString iconfName; funcactionType action ; bool is_toggled;};
-	editBlock editBlk ;
+	ToolType 					currentActiveTool		=	ToolType::none;
+	EditBlock 					editBlk ;
+	
+
 	
 public slots:
 	void actOpen();
@@ -40,7 +50,7 @@ public slots:
 	void actarrow_up();
 	void actarrow_down();
 public: 
-	toolType getTool();
+	ToolType getTool();
 	AppSettings	* getSettings();
 	const QVector<itemsMenuType> filemenuItems = {
 		{"Открыть",  	 &MainWindow::actOpen},
@@ -63,6 +73,6 @@ public:
 		{"Сдвиг вниз","down_svgrepo_com.svg"	 ,&MainWindow::actarrow_down,false}
 	};
 	MainWindow();
-	
+
 	
 }; // class MainWindow

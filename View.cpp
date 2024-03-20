@@ -1,16 +1,10 @@
 #include "View.hpp"
 #include "MainWindow.hpp"
 #include "Canvas.hpp"
-toolType View::getTool() {
+ToolType View::getTool() {
 	if (!mw) mw = static_cast<MainWindow *>(parent()->parent());	
 	return mw->getTool();
 }
-
-
-
-
-
-
 	bool View::isMouseInsideCanvas(QPointF 	mouseCoord) {
 		
 		return (mouseCoord.x()>=canvas->getTopLeft().x() && mouseCoord.x()<=canvas->getTopLeft().x()+canvas->getSize().width() ) &&
@@ -52,7 +46,9 @@ toolType View::getTool() {
 		tform.scale( scale, scale );
 		setTransform( tform );
 	}
-	
+	Canvas * View::getCanvas(){			
+		return canvas;
+	}
 	void View::wheelEvent( QWheelEvent * p_event )  {
 		//QGraphicsView::wheelEvent( p_event ); // I don't need default QGraphicsView wheel behaviour
 		if ( p_event->modifiers() & Qt::ControlModifier ) {
