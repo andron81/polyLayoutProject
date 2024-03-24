@@ -2,6 +2,31 @@
 #include "View.hpp"
 #include "AppSettings.hpp"
 	item_base::item_base(MainWindow* mw_):mw(mw_) {	}
+	
+MainWindow*	item_base::getmw(){return mw;}	
+	
+void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
+	switch (item->type()){
+			case 600:{
+				Myline* line = static_cast<Myline*>(item);
+				line->setColor(Color);
+				line->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
+			break;
+			}
+			case 603:{
+				Size* sz = static_cast<Size*>(item);
+				sz->setColor(Color);
+				sz->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
+			break;
+			}
+			case 602:{
+				Text* txt = static_cast<Text*>(item);
+				txt->setColor(Color);
+				txt->getmw()->geteditBlk().setVisible(EditBlockVisible::changeText );
+			break;							
+			}
+		}
+	}					
 
 	QPen item_base::getPen(ToolType style , qint8 width , qint64 color ){
 	QPen pen;

@@ -15,8 +15,9 @@ struct EditBlock{
 	QLineEdit* 					lineTextEdit;
 	QLabel* 					lineTextLabel2;
 	QPushButton*				rotateButton;
-	
 	void setVisible(EditBlockVisible);
+
+
 };
 
 class MainWindow : public QMainWindow {
@@ -35,6 +36,7 @@ class MainWindow : public QMainWindow {
 
 	
 public slots:
+	void lineSizeEditChanged();
 	void actOpen();
 	void actSave();
 	void actSaveAs();
@@ -49,7 +51,8 @@ public slots:
 	void actarrow_right();
 	void actarrow_up();
 	void actarrow_down();
-public: 
+public:
+	EditBlock& geteditBlk();
 	ToolType getTool();
 	AppSettings	* getSettings();
 	const QVector<itemsMenuType> filemenuItems = {

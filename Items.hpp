@@ -1,9 +1,12 @@
 #pragma once
 #include "MainWindow.hpp"
+#include <variant>
 //enum types { e_line_solid = QGraphicsItem::UserType + 1, e_line_dashed, e_text, e_size };
 
-
-
+class itemOperations {
+	public:
+	static void setColor(QGraphicsItem * , QColor);
+};
 
 
 struct item_base {
@@ -13,7 +16,7 @@ struct item_base {
 	virtual int type() const = 0;
 	virtual QJsonObject to_JSON() const = 0;
 	QPen getPen(ToolType , qint8 , qint64 );
-	virtual void setColor(QColor) = 0;
+	MainWindow*	getmw();	
 }; 
 class View;
 class Myline : public item_base,public QGraphicsItem {

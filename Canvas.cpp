@@ -110,20 +110,9 @@
 			MainWindow* MW = static_cast<MainWindow*>(getView()->parent()->parent());
 			if (flag) tmpColor=QColor(MW->getSettings()->getValue("lineColorSelected").toString().toInt(0, 16));
 				else 
-			tmpColor=QColor(MW->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
-
-			switch (currentItem->type()){
-							case 600:
-								static_cast<Myline*>(currentItem)->setColor(tmpColor);
-							break;
-							case 603:
-								static_cast<Size*>(currentItem)->setColor(tmpColor);
-							break;
-							case 602:
-								static_cast<Text*>(currentItem)->setColor(tmpColor);
-							break;							
-						}
-					if (!flag)	currentItem =nullptr;		 //if unselect
+					  tmpColor=QColor(MW->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
+					  itemOperations::setColor(currentItem , tmpColor);
+			if (!flag)	currentItem =nullptr;		 //if unselect
 		}
 	}
 	ToolType Canvas::getTool(){return getView()->getTool();}
@@ -159,7 +148,9 @@
 					point_and_QGraphicsItem  point = FindNearbyItem(mouseCoord);
 					if (point.item) {
 						currentItem = point.item;
-						select(true);						
+						select(true);
+						
+						
 					}					
 					break;
 				}	

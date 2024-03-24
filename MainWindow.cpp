@@ -3,7 +3,12 @@
 #include "View.hpp"
 #include "Canvas.hpp"
 
-
+EditBlock& MainWindow::geteditBlk(){
+	return editBlk;	
+}
+void MainWindow::lineSizeEditChanged() {
+	qDebug()<<"lineSizeEditChanged";
+}
 MainWindow::MainWindow()
 		:settings(new AppSettings), 
 		 QMainWindow( nullptr ), 
@@ -68,6 +73,9 @@ MainWindow::MainWindow()
 		statusBar()->addWidget(editBlk.lineTextEdit);
 		editBlk.lineSizeEdit->setFixedWidth( 90 );
 		editBlk.lineTextEdit->setFixedWidth( 90 );
+		//connect(button, &QPushButton::clicked, this , &MainWindow::actOpen) 
+		connect(  editBlk.lineSizeEdit, &QLineEdit::editingFinished, this, &MainWindow::lineSizeEditChanged );
+
 		statusBar()->addWidget(editBlk.rotateButton);
 		
 
@@ -157,14 +165,16 @@ MainWindow::MainWindow()
 				rotateButton->setVisible(false);
 			break;
 			case EditBlockVisible::changeLength :
-				widgetmodifyAct->setEnabled(true);	
+			qDebug()<<"changeLength";				
 				setVisible(EditBlockVisible::none);
+				widgetmodifyAct->setEnabled(true);	
 				lineSizeEdit->setVisible(true);
 				lineSizeLabel1->setVisible(true);
 				lineSizeLabel1->setText("Размер (мм.): ");				
 				
 			break;
 			case EditBlockVisible::changeText :	
+				setVisible(EditBlockVisible::none);
 				widgetmodifyAct->setEnabled(true);				
 				lineSizeEdit->setVisible(true);
 				lineSizeLabel1->setVisible(true);
