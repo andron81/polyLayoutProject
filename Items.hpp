@@ -33,10 +33,11 @@ class Myline : public item_base,public QGraphicsItem {
 	Myline(MainWindow* mw, QPointF);
 	QRectF boundingRect() const override;
 	void changefirstPointCoord(QPointF);
-	void changesecondPointCoord(QPointF);
+	void changesecondPointCoord(QPointF, bool alwaysChange = false);
 	void changePoints(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	void changeMode();
+	void changeLength(double);
 	void setColorItem(QColor);
 	QLineF line();
 	bool isHoriLine() const;

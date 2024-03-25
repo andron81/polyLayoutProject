@@ -2,12 +2,19 @@
 #include "AppSettings.hpp"
 #include "View.hpp"
 #include "Canvas.hpp"
+#include "Items.hpp"
 
 EditBlock& MainWindow::geteditBlk(){
 	return editBlk;	
 }
+View * MainWindow::getView(){
+	return view;
+}	
 void MainWindow::lineSizeEditChanged() {
-	qDebug()<<"lineSizeEditChanged";
+	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();	
+	if (itemTmp)
+	static_cast<Myline*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());
+
 }
 MainWindow::MainWindow()
 		:settings(new AppSettings), 

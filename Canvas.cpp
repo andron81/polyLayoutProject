@@ -42,7 +42,7 @@
 		if (currentItem && getTool()!=ToolType::edit) {
 		getView()->scene()->removeItem(currentItem); 
 		delete(currentItem);
-		currentItem=nullptr;
+		currentItem=nullptr; qDebug()<<"here1!";
 		}	
 	}
 	/*toolType Canvas::getTool(){
@@ -112,7 +112,7 @@
 				else 
 					  tmpColor=QColor(MW->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
 					  itemOperations::setColor(currentItem , tmpColor);
-			if (!flag)	currentItem =nullptr;		 //if unselect
+			if (!flag)	{currentItem =nullptr; qDebug()<<"here2!";} 		 
 		}
 	}
 	ToolType Canvas::getTool(){return getView()->getTool();}
@@ -125,8 +125,8 @@
 				case ToolType::line_dashed:{
 					Myline* line	= static_cast<Myline*>(currentItem);						
 					line->changeMode();
-					line->changesecondPointCoord(mouseCoord);							
-					if (line->getMode()>1) currentItem=nullptr;					
+					line->changesecondPointCoord(mouseCoord,false);							
+					if (line->getMode()>1) {currentItem=nullptr;qDebug()<<"here3";					}
 					break;
 				}
 				case ToolType::size: {					
@@ -135,26 +135,27 @@
 					switch (size->getMode()){
 					case 1: size->changesecondPointCoord(mouseCoord); break;
 					case 2: size->changelastPointCoord(mouseCoord); break;		
-					case 3: currentItem=nullptr;	 break;		
+					case 3: currentItem=nullptr; qDebug()<<"here4!";	 break;		
 					}
 					break;
 				}
 				case ToolType::text: {
-					currentItem=nullptr;	
+					currentItem=nullptr;qDebug()<<"here5!";	
 					break;
 				}
 				case ToolType::edit: {
+					qDebug()<<"ToolType::edit";
 					select(false);
 					point_and_QGraphicsItem  point = FindNearbyItem(mouseCoord);
 					if (point.item) {
 						currentItem = point.item;
-						select(true);
-						
-						
+						select(true);												
 					}					
 					break;
-				}	
-			}	
+				}
+								
+			}
+					qDebug()<<"****currentItem="<<currentItem;
 		}
 
 	point_and_QGraphicsItem  Canvas::FindNearbyItem(const QPointF& mouseCoord) {
@@ -231,4 +232,6 @@
 	if (minDistance==100) return {nullptr}; else {return result;}	
 	}		
 	
-	
+	QGraphicsItem* Canvas::	getCurrentItem() {
+		return  currentItem;		
+	}

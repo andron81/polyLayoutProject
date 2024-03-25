@@ -53,6 +53,7 @@ public slots:
 	void actarrow_down();
 public:
 	EditBlock& geteditBlk();
+	View * getView();
 	ToolType getTool();
 	AppSettings	* getSettings();
 	const QVector<itemsMenuType> filemenuItems = {

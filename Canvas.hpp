@@ -31,5 +31,6 @@ public:
 	void mousePressEvent(QMouseEvent *);
 	point_and_QGraphicsItem  FindNearbyItem(const QPointF&); 
 	void select(bool flag);
+	QGraphicsItem* getCurrentItem();
 	ToolType getTool();
 }; // class view_canvas

@@ -3,7 +3,9 @@
 #include "AppSettings.hpp"
 	item_base::item_base(MainWindow* mw_):mw(mw_) {	}
 	
-MainWindow*	item_base::getmw(){return mw;}	
+MainWindow*	item_base::getmw(){
+	return mw;
+}	
 	
 void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	switch (item->type()){
@@ -81,8 +83,9 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	if (mode==0) firstPoint=point_;
 	update();
 	}
-	void Myline::changesecondPointCoord(QPointF point_) {
-	if (mode==1) secondPoint=point_;
+	
+	void Myline::changesecondPointCoord(QPointF point_ , bool alwaysChange) {
+	if (mode==1 || alwaysChange) secondPoint=point_;
 	update();
 	}
 	QJsonObject Myline::to_JSON() const {
@@ -157,7 +160,13 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 				return result;
 		}
 		QLineF Size::get_main_line() {return main_line;}
-
+		void Myline::changeLength(double len) {
+			
+			if (isHoriLine()) {				
+				changesecondPointCoord(QPointF(firstPoint.x()+len,secondPoint.y()) , true);				
+			}
+			
+		} 
 		void Myline::changePoints(QPointF cursorCoord){			
 			cursorCoord=findObjectNearBy(cursorCoord);					
 			if (mode==0) changefirstPointCoord(cursorCoord);
@@ -542,7 +551,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	};
 	
 	bool Myline::isHoriLine() const  {
-		return firstPoint.y()==secondPoint.y();		
+		return (firstPoint.y()==secondPoint.y());		
 	}
 	quint32 Myline::getLength() const {
 		if (isHoriLine()) return abs(firstPoint.x() - secondPoint.x());

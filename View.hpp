@@ -10,7 +10,6 @@ class View : public QGraphicsView {
 	int					scalefactor			= scalefactorDiv;
 	MainWindow * 		mw					=nullptr;
 	Canvas * 			canvas;
-	QGraphicsItem* 	currentItem			=nullptr;
 	public:
 	//toolType getTool() {return static_cast<MainWindow>(mainWin)->getTool();}
 	ToolType getTool() ;
