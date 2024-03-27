@@ -16,6 +16,7 @@ struct EditBlock{
 	QLabel* 					lineTextLabel2;
 	QPushButton*				rotateButton;
 	void setVisible(EditBlockVisible);
+	void setlineSizeEdit(qreal);
 
 
 };
@@ -36,6 +37,7 @@ class MainWindow : public QMainWindow {
 
 	
 public slots:
+	void lineTextEditChanged();
 	void lineSizeEditChanged();
 	void actOpen();
 	void actSave();

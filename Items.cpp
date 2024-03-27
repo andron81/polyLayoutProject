@@ -6,24 +6,32 @@
 MainWindow*	item_base::getmw(){
 	return mw;
 }	
+void Text::changeSize(qreal sz){
 	
+	setFont(QFont("Arial", sz, QFont::Normal));
+	update();
+}
 void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	switch (item->type()){
 			case 600:{
 				Myline* line = static_cast<Myline*>(item);
 				line->setColor(Color);
-				line->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
+				line->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(line->getLength()));
+				line->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );				
 			break;
 			}
 			case 603:{
 				Size* sz = static_cast<Size*>(item);
 				sz->setColor(Color);
+				sz->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(sz->getLength()));
 				sz->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
 			break;
 			}
 			case 602:{
 				Text* txt = static_cast<Text*>(item);
 				txt->setColor(Color);
+				txt->getmw()->geteditBlk().lineTextEdit->setText(txt->toPlainText());
+				txt->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(txt->font().pointSize()));
 				txt->getmw()->geteditBlk().setVisible(EditBlockVisible::changeText );
 			break;							
 			}
@@ -520,11 +528,11 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	}
 	
 	Text::Text(MainWindow* mw_, QPointF firstPoint_):	
-			item_base(mw_){
+			item_base(mw_){				
 				setDefaultTextColor(pen.color() );
 			setPos( firstPoint_ );
 			qDebug()<<"new text";
-			setFont( QFont( "Times", 72) );
+			setFont( QFont( "Arial", 72) );
 			setPlainText( "Текст" );
 	}
 	
@@ -553,7 +561,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	bool Myline::isHoriLine() const  {
 		return (firstPoint.y()==secondPoint.y());		
 	}
-	quint32 Myline::getLength() const {
+	qreal Myline::getLength() const {
 		if (isHoriLine()) return abs(firstPoint.x() - secondPoint.x());
 			else return abs(firstPoint.y() - secondPoint.y());
 	}
@@ -561,7 +569,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		bool Size::isHoriLine() const  {
 		return main_line.y1()==main_line.y1();		
 	}
-	quint32 Size::getLength() const {
+	qreal Size::getLength() const {
 		if (isHoriLine()) return abs(main_line.x1() - main_line.x2());
 			else return abs(main_line.y1() - main_line.y2());
 	}

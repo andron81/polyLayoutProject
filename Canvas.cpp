@@ -111,8 +111,11 @@
 			if (flag) tmpColor=QColor(MW->getSettings()->getValue("lineColorSelected").toString().toInt(0, 16));
 				else 
 					  tmpColor=QColor(MW->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
-					  itemOperations::setColor(currentItem , tmpColor);
-			if (!flag)	{currentItem =nullptr; qDebug()<<"here2!";} 		 
+			itemOperations::setColor(currentItem , tmpColor);
+			if (!flag)	{
+			currentItem =nullptr;
+			MW->geteditBlk().setVisible(EditBlockVisible::none );
+			}
 		}
 	}
 	ToolType Canvas::getTool(){return getView()->getTool();}

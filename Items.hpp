@@ -42,7 +42,7 @@ class Myline : public item_base,public QGraphicsItem {
 	QLineF line();
 	bool isHoriLine() const;
 	void setColor(QColor);
-	quint32 getLength() const;
+	qreal getLength() const;
 	int type() const override { return Type; }
 	//point_and_QGraphicsItem findObjectNearBy(QPointF);
 	QPointF findObjectNearBy(QPointF);
@@ -58,12 +58,12 @@ class Size : public Myline {
 	void changePoints(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	QPointF findObjectNearBy(QPointF);
-	void changelastPointCoord(QPointF);
+	void changelastPointCoord(QPointF);	
 	void changeMode();
 	QLineF get_main_line();
 	void setColor(QColor);
 	bool isHoriLine() const;
-	quint32 getLength() const;
+	qreal getLength() const;
 	int type() const override { return Type; }
 
 };
@@ -76,6 +76,7 @@ public:
 	void changePoints(QPointF cursorCoord);	
 	QJsonObject to_JSON() const;
 	int type() const;
+	void changeSize(qreal);
 	void setColor(QColor);
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override ;
 	//void change_size_by( int points );

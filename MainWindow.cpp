@@ -4,6 +4,12 @@
 #include "Canvas.hpp"
 #include "Items.hpp"
 
+
+void EditBlock::setlineSizeEdit(qreal value){
+	
+	
+}
+
 EditBlock& MainWindow::geteditBlk(){
 	return editBlk;	
 }
@@ -12,9 +18,22 @@ View * MainWindow::getView(){
 }	
 void MainWindow::lineSizeEditChanged() {
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();	
-	if (itemTmp)
+	if (itemTmp) {
+	if (itemTmp->type()==600)
 	static_cast<Myline*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());
+	else 
+	if (itemTmp->type()==602){
+		qDebug()<<"ass";
+	static_cast<Text*>(itemTmp)->changeSize(editBlk.lineSizeEdit->text().toDouble());	
+	}
 
+	}
+
+}
+void MainWindow::lineTextEditChanged() {
+	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+	static_cast<Text*>(itemTmp)->setPlainText(editBlk.lineTextEdit->text());
+	//static_cast<Text*>(itemTmp)->update();
 }
 MainWindow::MainWindow()
 		:settings(new AppSettings), 
@@ -82,6 +101,7 @@ MainWindow::MainWindow()
 		editBlk.lineTextEdit->setFixedWidth( 90 );
 		//connect(button, &QPushButton::clicked, this , &MainWindow::actOpen) 
 		connect(  editBlk.lineSizeEdit, &QLineEdit::editingFinished, this, &MainWindow::lineSizeEditChanged );
+		connect(  editBlk.lineTextEdit, &QLineEdit::editingFinished, this, &MainWindow::lineTextEditChanged );
 
 		statusBar()->addWidget(editBlk.rotateButton);
 		
