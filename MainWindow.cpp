@@ -5,16 +5,17 @@
 #include "Items.hpp"
 
 
-void EditBlock::setlineSizeEdit(qreal value){
-	
-	
-}
+
 
 EditBlock& MainWindow::geteditBlk(){
 	return editBlk;	
 }
 View * MainWindow::getView(){
 	return view;
+}
+void MainWindow::rotateButtonClick(){
+	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+	itemTmp->setRotation(itemTmp->rotation()+90);
 }	
 void MainWindow::lineSizeEditChanged() {
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();	
@@ -23,10 +24,11 @@ void MainWindow::lineSizeEditChanged() {
 	static_cast<Myline*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());
 	else 
 	if (itemTmp->type()==602){
-		qDebug()<<"ass";
 	static_cast<Text*>(itemTmp)->changeSize(editBlk.lineSizeEdit->text().toDouble());	
 	}
-
+	if (itemTmp->type()==603){
+	static_cast<Size*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());	
+	}
 	}
 
 }
@@ -102,6 +104,7 @@ MainWindow::MainWindow()
 		//connect(button, &QPushButton::clicked, this , &MainWindow::actOpen) 
 		connect(  editBlk.lineSizeEdit, &QLineEdit::editingFinished, this, &MainWindow::lineSizeEditChanged );
 		connect(  editBlk.lineTextEdit, &QLineEdit::editingFinished, this, &MainWindow::lineTextEditChanged );
+		connect(  editBlk.rotateButton, &QPushButton::clicked, this, &MainWindow::rotateButtonClick );
 
 		statusBar()->addWidget(editBlk.rotateButton);
 		
@@ -119,7 +122,7 @@ MainWindow::MainWindow()
 		view->setFocus();
 	}
 	ToolType MainWindow::getTool() {
-					return currentActiveTool;
+		return currentActiveTool;
 	}
 	AppSettings	* MainWindow::getSettings(){
 		return settings;
@@ -159,7 +162,7 @@ MainWindow::MainWindow()
 		qDebug()<<"tool_solid_line";
 	}
 	void MainWindow::acttool_remove() {
-		qDebug()<<"acttool_remove";
+		view->getCanvas()->eraseCurrentItem();	
 	}
 	void MainWindow::acttool_text() {
 		view->getCanvas()->select(false);
@@ -168,17 +171,23 @@ MainWindow::MainWindow()
 	}
 
 	void MainWindow::actarrow_left() {
-		qDebug()<<"actarrow_left";
+		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+		itemOperations::move(itemTmp, 0);
 	}
 	void MainWindow::actarrow_right() {
-		qDebug()<<"actarrow_right";
+		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+		itemOperations::move(itemTmp, 1);
 	}
-	void MainWindow::actarrow_up() {
-		qDebug()<<"actarrow_up";}
 	void MainWindow::actarrow_down() {
-		qDebug()<<"actarrow_down";
+		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+		itemOperations::move(itemTmp, 2);
 		}	
 	
+	void MainWindow::actarrow_up() {
+		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+		itemOperations::move(itemTmp, 3);
+
+	}
 
 	void EditBlock::setVisible(EditBlockVisible flag) {
 			

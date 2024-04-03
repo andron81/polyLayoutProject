@@ -10,7 +10,8 @@ struct point_and_QGraphicsItem{
 };
 
 class Canvas : public QGraphicsRectItem {
-	bool 					isMouseInsideCanvas = false;	
+	bool 					isMouseInsideCanvas = false;
+	bool 					isMouseHold = false;
 	View* 					view;
 	QGraphicsItem*			currentItem = nullptr;			
 
@@ -21,7 +22,7 @@ public:
 	QPointF getTopLeft() const  ; 
 
 	QPointF getBottomRight() const  ;
-	
+	void eraseCurrentItem();
 	QSize getSize() const  ;	
 	View* getView() const ;
 	auto itemCast();
@@ -29,6 +30,7 @@ public:
 	void mouseLeaveEvent();
 	void mouseMoveEvent(QMouseEvent *);
 	void mousePressEvent(QMouseEvent *);
+	void mouseReleaseEvent();
 	point_and_QGraphicsItem  FindNearbyItem(const QPointF&); 
 	void select(bool flag);
 	QGraphicsItem* getCurrentItem();

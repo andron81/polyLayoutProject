@@ -6,6 +6,8 @@
 class itemOperations {
 	public:
 	static void setColor(QGraphicsItem * , QColor);
+	static void move(QGraphicsItem *, int);
+	
 };
 
 
@@ -34,10 +36,15 @@ class Myline : public item_base,public QGraphicsItem {
 	QRectF boundingRect() const override;
 	void changefirstPointCoord(QPointF);
 	void changesecondPointCoord(QPointF, bool alwaysChange = false);
+	void moveRight();
+	void moveLeft();
+	void moveUp();
+	void moveDown();
 	void changePoints(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	void changeMode();
 	void changeLength(double);
+	void move(QPointF);
 	void setColorItem(QColor);
 	QLineF line();
 	bool isHoriLine() const;
@@ -58,7 +65,8 @@ class Size : public Myline {
 	void changePoints(QPointF);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	QPointF findObjectNearBy(QPointF);
-	void changelastPointCoord(QPointF);	
+	void changelastPointCoord(QPointF);
+	void changeLength(double);	
 	void changeMode();
 	QLineF get_main_line();
 	void setColor(QColor);

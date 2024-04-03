@@ -25,7 +25,6 @@
 
 #include <QUndoStack>
 #include <QUndoView>
-#include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsItem>
 #include <QStyleOptionGraphicsItem>

@@ -39,6 +39,7 @@ class MainWindow : public QMainWindow {
 public slots:
 	void lineTextEditChanged();
 	void lineSizeEditChanged();
+	void rotateButtonClick();
 	void actOpen();
 	void actSave();
 	void actSaveAs();

@@ -2,6 +2,7 @@
 
 class MainWindow;
 class Canvas;
+class Scene;
 
 class View : public QGraphicsView {
 	const int			scalefactorMin		= 1;
@@ -17,6 +18,7 @@ class View : public QGraphicsView {
 	View( QGraphicsScene * p_scene, QWidget * p_parent );
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
+	void mouseReleaseEvent(QMouseEvent *event) override;
 	void update_zoom();
 	void wheelEvent( QWheelEvent * p_event ) override ;
 	Canvas * getCanvas();

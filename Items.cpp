@@ -36,7 +36,50 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			break;							
 			}
 		}
-	}					
+	}
+	void Myline::moveRight(){
+		qint8 step = mw->getSettings()->getValue("moveStep").toInt();
+		firstPoint.setX(firstPoint.x()+step);
+		secondPoint.setX(secondPoint.x()+step);
+			update();
+	}
+	void Myline::moveLeft(){
+		qint8 step = mw->getSettings()->getValue("moveStep").toInt();
+		firstPoint.setX(firstPoint.x()-step);
+		secondPoint.setX(secondPoint.x()-step);
+		update();
+	}
+	
+	void Myline::moveUp(){
+		qint8 step = mw->getSettings()->getValue("moveStep").toInt();
+		firstPoint.setY(firstPoint.y()+step);
+		secondPoint.setY(secondPoint.y()+step);
+			update();
+	}
+	void Myline::moveDown(){		
+		qint8 step = mw->getSettings()->getValue("moveStep").toInt();		
+		firstPoint.setY(firstPoint.y()	-step);
+		secondPoint.setY(secondPoint.y()-step);
+			update();
+	}
+
+	
+
+	
+	void itemOperations::move(QGraphicsItem * item, int movement){
+		switch (item->type()){
+			case 600:
+			qDebug()<<"move";
+			Myline* line = static_cast<Myline*>(item);
+			if (movement==0) line->moveLeft(); else
+			if (movement==1) line->moveRight(); else
+			if (movement==2) line->moveUp(); else			
+			if (movement==3) line->moveDown(); 
+			break;
+				
+		}
+		
+	}
 
 	QPen item_base::getPen(ToolType style , qint8 width , qint64 color ){
 	QPen pen;
@@ -170,11 +213,34 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		QLineF Size::get_main_line() {return main_line;}
 		void Myline::changeLength(double len) {
 			
-			if (isHoriLine()) {				
+			if (isHoriLine()) 
 				changesecondPointCoord(QPointF(firstPoint.x()+len,secondPoint.y()) , true);				
-			}
 			
-		} 
+			else 
+				changesecondPointCoord(QPointF(firstPoint.x(),secondPoint.y()+len) , true);				
+			
+		}
+		void Myline::move(QPointF point){
+			if (isHoriLine()){
+				
+				qreal delta1=abs(point.x()-firstPoint.x());
+				qreal delta2=abs(secondPoint.x()-point.x());
+				firstPoint = {point.x()-delta1, point.y()};
+				secondPoint = {point.x()+delta2, point.y()};									  
+				
+			}
+			update();
+			
+		}
+		void Size::changeLength(double len) {
+			
+			if (isHoriLine()) 
+				changesecondPointCoord(QPointF(firstPoint.x()+len,secondPoint.y()) , true);				
+			
+			else 
+				changesecondPointCoord(QPointF(firstPoint.x(),secondPoint.y()+len) , true);				
+			
+		}		
 		void Myline::changePoints(QPointF cursorCoord){			
 			cursorCoord=findObjectNearBy(cursorCoord);					
 			if (mode==0) changefirstPointCoord(cursorCoord);
@@ -534,6 +600,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			qDebug()<<"new text";
 			setFont( QFont( "Arial", 72) );
 			setPlainText( "Текст" );
+		
 	}
 	
 	void Text::changePoints(QPointF cursorCoord){			

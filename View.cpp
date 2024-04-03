@@ -1,6 +1,12 @@
 #include "View.hpp"
 #include "MainWindow.hpp"
 #include "Canvas.hpp"
+
+/*
+void QGraphicsScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event){
+	qDebug()<<"dragMoveEvent";
+}
+*/
 ToolType View::getTool() {
 	if (!mw) mw = static_cast<MainWindow *>(parent()->parent());	
 	return mw->getTool();
@@ -10,11 +16,12 @@ ToolType View::getTool() {
 		return (mouseCoord.x()>=canvas->getTopLeft().x() && mouseCoord.x()<=canvas->getTopLeft().x()+canvas->getSize().width() ) &&
 			   (mouseCoord.y()>=canvas->getTopLeft().y() && mouseCoord.y()<=canvas->getTopLeft().y()+canvas->getSize().height());
 		
-	}
+	}						
+
 	View::View( QGraphicsScene * p_scene, QWidget * p_parent )
 		: QGraphicsView( p_scene, p_parent ),
 		  canvas(new Canvas(this))
-	{
+	{		
 		setRenderHint( QPainter::Antialiasing, true );
 		setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
 		setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
@@ -27,6 +34,10 @@ ToolType View::getTool() {
 			[&]( QGraphicsItem * p_new, QGraphicsItem * p_old, Qt::FocusReason reason ) {
 			} );
 	};
+	void View::mouseReleaseEvent(QMouseEvent *event) {
+		
+		canvas->mouseReleaseEvent();
+	}
 	void View::mouseMoveEvent(QMouseEvent *event) {
 		QPointF 		mouseCoord = {mapToScene( event->pos() ).x(),mapToScene( event->pos() ).y()};
 		QSize			canvasSize = canvas->getSize(); 

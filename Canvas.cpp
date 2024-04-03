@@ -34,25 +34,24 @@
 		int w = size.width();
 		int h = size.height();
 		setRect( -w / 2, -h / 2, w, h );
-		//setRect( , 0, 100, 100 );
 	}
 
 	void Canvas::mouseLeaveEvent(){
 		isMouseInsideCanvas=false;
-		if (currentItem && getTool()!=ToolType::edit) {
+		if (currentItem && getTool()!=ToolType::edit) 
+			eraseCurrentItem();
+	}
+
+	void Canvas::eraseCurrentItem(){
 		getView()->scene()->removeItem(currentItem); 
 		delete(currentItem);
-		currentItem=nullptr; qDebug()<<"here1!";
-		}	
+		currentItem=nullptr; 
 	}
-	/*toolType Canvas::getTool(){
-	MainWindow*      		MW 		   = static_cast<MainWindow*>(getView()->parent()->parent());
-	return MW->getTool() ;
-	}*/
+
 	
 	void Canvas::mouseMoveEvent(QMouseEvent *event){
 						isMouseInsideCanvas=true;
-		QPointF 		cursorCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
+			QPointF 		cursorCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 											 getView()->mapToScene( event->pos() ).y());
 		MainWindow* MW = static_cast<MainWindow*>(getView()->parent()->parent());											
 		switch (getTool()){
@@ -64,6 +63,15 @@
 			else static_cast<Myline*>(currentItem)->changePoints(cursorCoord);
 		break;
 		}
+		case ToolType::edit:	{
+			if (isMouseHold && currentItem) {
+			
+				if (currentItem->type()==600)
+				static_cast<Myline*>(currentItem)->move(cursorCoord);
+				
+			}	
+			break;
+		}		
 		case ToolType::size:	{
 			if (!currentItem) {
 				
@@ -119,8 +127,12 @@
 		}
 	}
 	ToolType Canvas::getTool(){return getView()->getTool();}
+	void Canvas::mouseReleaseEvent(){
+		isMouseHold=false;
+		qDebug()<<"Canvas::mouseReleaseEvent";
+	}
 	void Canvas::mousePressEvent(QMouseEvent * event) {
-
+		isMouseHold=true;
 		QPointF 		mouseCoord = QPointF(getView()->mapToScene( event->pos() ).x(),
 											 getView()->mapToScene( event->pos() ).y());	
 			switch (getTool()) {
