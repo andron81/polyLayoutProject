@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow {
 	View *						view;
 	ToolType 					currentActiveTool		=	ToolType::none;
 	EditBlock 					editBlk ;
-	
+	QLabel*						labelCoord;
 
 	
 public slots:
@@ -59,6 +59,7 @@ public:
 	View * getView();
 	ToolType getTool();
 	AppSettings	* getSettings();
+	void setCoordLabel(QString);
 	const QVector<itemsMenuType> filemenuItems = {
 		{"Открыть",  	 &MainWindow::actOpen},
 		{"Сохранить",	 &MainWindow::actSave},

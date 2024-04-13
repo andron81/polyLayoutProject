@@ -44,7 +44,7 @@ class Myline : public item_base,public QGraphicsItem {
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	void changeMode();
 	void changeLength(double);
-	void move(QPointF);
+	void move(QPointF, QPointF&);
 	void setColorItem(QColor);
 	QLineF line();
 	bool isHoriLine() const;
@@ -73,6 +73,7 @@ class Size : public Myline {
 	bool isHoriLine() const;
 	qreal getLength() const;
 	int type() const override { return Type; }
+	void move(QPointF& , QPointF&);
 
 };
 

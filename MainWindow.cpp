@@ -35,7 +35,9 @@ void MainWindow::lineSizeEditChanged() {
 void MainWindow::lineTextEditChanged() {
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
 	static_cast<Text*>(itemTmp)->setPlainText(editBlk.lineTextEdit->text());
-	//static_cast<Text*>(itemTmp)->update();
+}
+void MainWindow::setCoordLabel(QString txt){
+	labelCoord->setText(  txt);	
 }
 MainWindow::MainWindow()
 		:settings(new AppSettings), 
@@ -67,7 +69,8 @@ MainWindow::MainWindow()
 							}
 			} 
 		};
-		statusBar()->addWidget(new QLabel("Координаты"));
+		labelCoord = new QLabel;
+		statusBar()->addWidget(labelCoord);
 		editBlk.widgetmodifyAct->setEnabled(false);
 		QStringList cmdline_args = QCoreApplication::arguments();
 		setWindowState(Qt::WindowMaximized);

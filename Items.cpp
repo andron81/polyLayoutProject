@@ -69,7 +69,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	void itemOperations::move(QGraphicsItem * item, int movement){
 		switch (item->type()){
 			case 600:
-			qDebug()<<"move";
 			Myline* line = static_cast<Myline*>(item);
 			if (movement==0) line->moveLeft(); else
 			if (movement==1) line->moveRight(); else
@@ -114,7 +113,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			break;
 			case  2:
 				painter->setPen(pen);
-				qDebug()<<pen;
 				painter->drawLine(firstPoint.x(),firstPoint.y() ,secondPoint.x(),secondPoint.y());	
 		  
 			break;
@@ -220,18 +218,28 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 				changesecondPointCoord(QPointF(firstPoint.x(),secondPoint.y()+len) , true);				
 			
 		}
-		void Myline::move(QPointF point){
-			if (isHoriLine()){
-				
-				qreal delta1=abs(point.x()-firstPoint.x());
-				qreal delta2=abs(secondPoint.x()-point.x());
-				firstPoint = {point.x()-delta1, point.y()};
-				secondPoint = {point.x()+delta2, point.y()};									  
-				
-			}
+		void Myline::move(QPointF mouseCord , QPointF& 	currentItemPoint){
+				qreal deltaX=currentItemPoint.x()-mouseCord.x();
+				qreal deltaY=currentItemPoint.y()-mouseCord.y();;
+					firstPoint =  {firstPoint.x() -deltaX,firstPoint.y() -deltaY };
+					secondPoint = {secondPoint.x()-deltaX,secondPoint.y()-deltaY };
+								currentItemPoint = mouseCord;
 			update();
 			
 		}
+		
+		void Size::move(QPointF& mouseCord , QPointF& 	currentItemPoint){
+			
+				qreal deltaX=currentItemPoint.x()-mouseCord.x();
+				qreal deltaY=currentItemPoint.y()-mouseCord.y();;
+					firstPoint =  {firstPoint.x() -deltaX,firstPoint.y() -deltaY };
+					secondPoint = {secondPoint.x()-deltaX,secondPoint.y()-deltaY };
+					lastPoint = {lastPoint.x()-deltaX,lastPoint.y()-deltaY };
+				
+								currentItemPoint = mouseCord;
+			update();			
+		}
+		
 		void Size::changeLength(double len) {
 			
 			if (isHoriLine()) 
@@ -292,9 +300,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 				}
 				painter->setPen(pen);
 				if (firstPoint.y()==secondPoint.y() ) {
-					qDebug()<<firstPoint.x()<<" "<<secondPoint.x();
 					if (abs(secondPoint.x()-firstPoint.x())<40) {
-						qDebug()<<"here 1 "<<abs(firstPoint.x()-secondPoint.x());
 						painter->drawLine(firstPoint.x()-15,lastPoint.y(),secondPoint.x()+15,lastPoint.y()); 
 						main_line=QLineF(firstPoint.x(),lastPoint.y(),secondPoint.x(),lastPoint.y());//set mainline 
 						painter->drawLine(firstPoint.x(),lastPoint.y(),firstPoint.x()-8,lastPoint.y()+8);
@@ -303,7 +309,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 						painter->drawLine(secondPoint.x(),lastPoint.y(),secondPoint.x()+8,lastPoint.y()+8);
 					}
 					else {
-						qDebug()<<"here 2 "<<abs(firstPoint.x()-secondPoint.x());
 						painter->drawLine(firstPoint.x(),lastPoint.y(),secondPoint.x(),lastPoint.y()); //!
 						main_line=QLineF(firstPoint.x(),lastPoint.y(),secondPoint.x(),lastPoint.y());//set mainline 
 						painter->drawLine(firstPoint.x(),lastPoint.y(),firstPoint.x()+8,lastPoint.y()+8);
@@ -597,7 +602,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			item_base(mw_){				
 				setDefaultTextColor(pen.color() );
 			setPos( firstPoint_ );
-			qDebug()<<"new text";
 			setFont( QFont( "Arial", 72) );
 			setPlainText( "Текст" );
 		
@@ -605,7 +609,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	
 	void Text::changePoints(QPointF cursorCoord){			
 							
-			qDebug()<<"Text::changePoints " <<cursorCoord;
 			setPos( cursorCoord );
 			
 	}
@@ -641,7 +644,11 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			else return abs(main_line.y1() - main_line.y2());
 	}
 	
-	void Size::setColor(QColor clr_) {pen.setColor(clr_);update();}
+	void Size::setColor(QColor clr_) {pen.setColor(clr_);update(); 
+	qDebug()<<"firstPoint="<<firstPoint;
+	qDebug()<<"secondPoint="<<secondPoint;
+	qDebug()<<"lastPoint="<<lastPoint;
+	}
 	void Myline::setColor(QColor clr_) {pen.setColor(clr_);update();}
 	void Text::setColor(QColor clr_) {setDefaultTextColor(clr_) ;qDebug()<<"text";pen.setColor(clr_);}
 	

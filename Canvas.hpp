@@ -13,7 +13,9 @@ class Canvas : public QGraphicsRectItem {
 	bool 					isMouseInsideCanvas = false;
 	bool 					isMouseHold = false;
 	View* 					view;
-	QGraphicsItem*			currentItem = nullptr;			
+	QGraphicsItem*			currentItem = nullptr;
+	QPointF					currentItemPoint;
+	
 
 public:
 	Canvas(View* );
@@ -25,13 +27,12 @@ public:
 	void eraseCurrentItem();
 	QSize getSize() const  ;	
 	View* getView() const ;
-	auto itemCast();
 	void setSize( const QSize & size ); 
 	void mouseLeaveEvent();
 	void mouseMoveEvent(QMouseEvent *);
 	void mousePressEvent(QMouseEvent *);
 	void mouseReleaseEvent();
-	point_and_QGraphicsItem  FindNearbyItem(const QPointF&); 
+	void FindNearbyItem(const QPointF&); 
 	void select(bool flag);
 	QGraphicsItem* getCurrentItem();
 	ToolType getTool();
