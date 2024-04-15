@@ -68,10 +68,11 @@
 			if (isMouseHold && currentItem) {
 			
 				if (currentItem->type()==600)
-				static_cast<Myline*>(currentItem)->move(cursorCoord, currentItemPoint);
+				static_cast<Myline*>(currentItem)->drag(cursorCoord, currentItemPoint);
 				if (currentItem->type()==603)
-				static_cast<Size*>(currentItem)->move(cursorCoord, currentItemPoint);
-				
+				static_cast<Size*>(currentItem)->drag(cursorCoord, currentItemPoint);
+				if (currentItem->type()==602)
+				static_cast<Text*>(currentItem)->drag(cursorCoord);
 			}	
 			break;
 		}		
@@ -115,8 +116,7 @@
 	
 	View* Canvas::getView() const  {return view;}
 
-	void Canvas::select
-	(bool flag) {
+	void Canvas::select(bool flag) {
 		QColor tmpColor;
 		if (currentItem && getTool()==ToolType::edit) {
 			MainWindow* MW = static_cast<MainWindow*>(getView()->parent()->parent());
@@ -164,8 +164,7 @@
 				case ToolType::edit: {
 					select(false);
 					FindNearbyItem(mouseCoord);
-					if (currentItem) select(true);												
-					
+					if (currentItem) select(true);																	
 					break;
 				}
 								

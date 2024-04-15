@@ -68,13 +68,30 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	
 	void itemOperations::move(QGraphicsItem * item, int movement){
 		switch (item->type()){
-			case 600:
+			case 600:{
 			Myline* line = static_cast<Myline*>(item);
 			if (movement==0) line->moveLeft(); else
 			if (movement==1) line->moveRight(); else
 			if (movement==2) line->moveUp(); else			
 			if (movement==3) line->moveDown(); 
 			break;
+			}
+			case 602:{
+			Text* text = static_cast<Text*>(item);
+			if (movement==0) text->moveLeft(); else
+			if (movement==1) text->moveRight(); else
+			if (movement==2) text->moveUp(); else			
+			if (movement==3) text->moveDown(); 
+			break;
+			}
+			case 603:{
+			Size* sz = static_cast<Size*>(item);
+			if (movement==0) sz->moveLeft(); else
+			if (movement==1) sz->moveRight(); else
+			if (movement==2) sz->moveUp(); else			
+			if (movement==3) sz->moveDown(); 
+			break;
+			}
 				
 		}
 		
@@ -218,7 +235,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 				changesecondPointCoord(QPointF(firstPoint.x(),secondPoint.y()+len) , true);				
 			
 		}
-		void Myline::move(QPointF mouseCord , QPointF& 	currentItemPoint){
+		void Myline::drag(QPointF mouseCord , QPointF& 	currentItemPoint){
 				qreal deltaX=currentItemPoint.x()-mouseCord.x();
 				qreal deltaY=currentItemPoint.y()-mouseCord.y();;
 					firstPoint =  {firstPoint.x() -deltaX,firstPoint.y() -deltaY };
@@ -228,15 +245,19 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			
 		}
 		
-		void Size::move(QPointF& mouseCord , QPointF& 	currentItemPoint){
-			
+		void Size::drag(QPointF& mouseCord , QPointF& 	currentItemPoint){			
 				qreal deltaX=currentItemPoint.x()-mouseCord.x();
 				qreal deltaY=currentItemPoint.y()-mouseCord.y();;
 					firstPoint =  {firstPoint.x() -deltaX,firstPoint.y() -deltaY };
 					secondPoint = {secondPoint.x()-deltaX,secondPoint.y()-deltaY };
-					lastPoint = {lastPoint.x()-deltaX,lastPoint.y()-deltaY };
-				
+					lastPoint = {lastPoint.x()-deltaX,lastPoint.y()-deltaY };				
 								currentItemPoint = mouseCord;
+			update();			
+		}
+		void Text::drag(QPointF& mouseCord ){			
+			setPos(mouseCord);
+					firstPoint =  mouseCord;
+
 			update();			
 		}
 		
@@ -611,6 +632,44 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 							
 			setPos( cursorCoord );
 			
+	}
+	
+	void Size::moveLeft(){
+			firstPoint={firstPoint.x()-1,firstPoint.y()};
+			secondPoint={secondPoint.x()-1,secondPoint.y()};
+			lastPoint={lastPoint.x()-1,lastPoint.y()};
+			update();
+			
+	}
+	void Size::moveRight(){
+			firstPoint = {firstPoint.x()+1,firstPoint.y()};
+			secondPoint = {secondPoint.x()+1,secondPoint.y()};
+			lastPoint = {lastPoint.x()+1,lastPoint.y()};
+			update();
+	}
+	void Size::moveUp(){
+			firstPoint = {firstPoint.x(),firstPoint.y()+1};
+			secondPoint = {secondPoint.x(),secondPoint.y()+1};
+			lastPoint = {lastPoint.x(),lastPoint.y()+1};	
+			update();
+	}
+	void Size::moveDown(){
+			firstPoint = {firstPoint.x(),firstPoint.y()-1};
+			secondPoint = {secondPoint.x(),secondPoint.y()-1};
+			lastPoint = {lastPoint.x(),lastPoint.y()-1};	
+			update();
+	}
+	void Text::moveLeft(){
+		setPos( pos().x()-1,pos().y() );
+	}
+	void Text::moveUp(){
+		setPos( pos().x(),pos().y()+1 );
+	}
+	void Text::moveDown(){
+		setPos( pos().x(),pos().y()-1 );	
+	}
+	void Text::moveRight(){
+		setPos( pos().x()+1,pos().y() );
 	}
 	int Text::type() const{
 		return Type;

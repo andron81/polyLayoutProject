@@ -1,13 +1,8 @@
 #pragma once
-	#include "AppSettings.hpp"
+
+#include "AppSettings.hpp"
 class View;
 
-
-struct point_and_QGraphicsItem{
-	QGraphicsItem* item;
-	QPointF point;
-	QLineF firstCoord;	
-};
 
 class Canvas : public QGraphicsRectItem {
 	bool 					isMouseInsideCanvas = false;
