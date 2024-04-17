@@ -124,11 +124,28 @@ MainWindow::MainWindow()
 		
 		view->setFocus();
 	}
+	
 	ToolType MainWindow::getTool() {
 		return currentActiveTool;
 	}
 	AppSettings	* MainWindow::getSettings(){
 		return settings;
+	}
+	void MainWindow::actExport(){
+
+		QFileDialog dialog(this);
+		 QStringList filters;
+		 filters << "jpg file (*.jpg)"<< "png file (*.png)"<< "Any files (*)";	
+		 dialog.setAcceptMode (QFileDialog :: AcceptSave); 		 
+		 dialog.setNameFilters(filters);		 
+		 QStringList fileNames;
+		 if (dialog.exec()) fileNames = dialog.selectedFiles(); else return;		 
+		view->save_to_image( fileNames.back() , dialog.selectedMimeTypeFilter());
+
+
+	}
+	void MainWindow::actNew() {
+		view->getCanvas()->clear();
 	}
 	void MainWindow::actOpen() {
 		view->getCanvas()->select(false);

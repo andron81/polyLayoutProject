@@ -40,9 +40,11 @@ public slots:
 	void lineTextEditChanged();
 	void lineSizeEditChanged();
 	void rotateButtonClick();
+	void actNew();
 	void actOpen();
 	void actSave();
 	void actSaveAs();
+	void actExport();	
 	void actExit();
 	void acttool_edit();
 	void acttool_size();
@@ -61,9 +63,11 @@ public:
 	AppSettings	* getSettings();
 	void setCoordLabel(QString);
 	const QVector<itemsMenuType> filemenuItems = {
+		{"Новый",  	 &MainWindow::actNew},
 		{"Открыть",  	 &MainWindow::actOpen},
 		{"Сохранить",	 &MainWindow::actSave},
 		{"Сохранить как",&MainWindow::actSaveAs},
+		{"Экспортировать как",&MainWindow::actExport},
 		{"Выход",	 &MainWindow::actExit}
 	};
 	const QVector<itemsButtonType> toolButtons = {

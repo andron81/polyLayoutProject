@@ -44,9 +44,11 @@ static constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers:
     "",
     "lineSizeEditChanged",
     "rotateButtonClick",
+    "actNew",
     "actOpen",
     "actSave",
     "actSaveAs",
+    "actExport",
     "actExit",
     "acttool_edit",
     "acttool_size",
@@ -61,26 +63,28 @@ static constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers:
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSMainWindowENDCLASS_t {
-    uint offsetsAndSizes[38];
+    uint offsetsAndSizes[42];
     char stringdata0[11];
     char stringdata1[20];
     char stringdata2[1];
     char stringdata3[20];
     char stringdata4[18];
-    char stringdata5[8];
+    char stringdata5[7];
     char stringdata6[8];
-    char stringdata7[10];
-    char stringdata8[8];
-    char stringdata9[13];
-    char stringdata10[13];
-    char stringdata11[20];
-    char stringdata12[19];
-    char stringdata13[15];
-    char stringdata14[13];
-    char stringdata15[14];
-    char stringdata16[15];
-    char stringdata17[12];
-    char stringdata18[14];
+    char stringdata7[8];
+    char stringdata8[10];
+    char stringdata9[10];
+    char stringdata10[8];
+    char stringdata11[13];
+    char stringdata12[13];
+    char stringdata13[20];
+    char stringdata14[19];
+    char stringdata15[15];
+    char stringdata16[13];
+    char stringdata17[14];
+    char stringdata18[15];
+    char stringdata19[12];
+    char stringdata20[14];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSMainWindowENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -91,29 +95,33 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSMainWindowENDCLASS_t qt_meta_st
         QT_MOC_LITERAL(31, 0),  // ""
         QT_MOC_LITERAL(32, 19),  // "lineSizeEditChanged"
         QT_MOC_LITERAL(52, 17),  // "rotateButtonClick"
-        QT_MOC_LITERAL(70, 7),  // "actOpen"
-        QT_MOC_LITERAL(78, 7),  // "actSave"
-        QT_MOC_LITERAL(86, 9),  // "actSaveAs"
-        QT_MOC_LITERAL(96, 7),  // "actExit"
-        QT_MOC_LITERAL(104, 12),  // "acttool_edit"
-        QT_MOC_LITERAL(117, 12),  // "acttool_size"
-        QT_MOC_LITERAL(130, 19),  // "acttool_dotted_line"
-        QT_MOC_LITERAL(150, 18),  // "acttool_solid_line"
-        QT_MOC_LITERAL(169, 14),  // "acttool_remove"
-        QT_MOC_LITERAL(184, 12),  // "acttool_text"
-        QT_MOC_LITERAL(197, 13),  // "actarrow_left"
-        QT_MOC_LITERAL(211, 14),  // "actarrow_right"
-        QT_MOC_LITERAL(226, 11),  // "actarrow_up"
-        QT_MOC_LITERAL(238, 13)   // "actarrow_down"
+        QT_MOC_LITERAL(70, 6),  // "actNew"
+        QT_MOC_LITERAL(77, 7),  // "actOpen"
+        QT_MOC_LITERAL(85, 7),  // "actSave"
+        QT_MOC_LITERAL(93, 9),  // "actSaveAs"
+        QT_MOC_LITERAL(103, 9),  // "actExport"
+        QT_MOC_LITERAL(113, 7),  // "actExit"
+        QT_MOC_LITERAL(121, 12),  // "acttool_edit"
+        QT_MOC_LITERAL(134, 12),  // "acttool_size"
+        QT_MOC_LITERAL(147, 19),  // "acttool_dotted_line"
+        QT_MOC_LITERAL(167, 18),  // "acttool_solid_line"
+        QT_MOC_LITERAL(186, 14),  // "acttool_remove"
+        QT_MOC_LITERAL(201, 12),  // "acttool_text"
+        QT_MOC_LITERAL(214, 13),  // "actarrow_left"
+        QT_MOC_LITERAL(228, 14),  // "actarrow_right"
+        QT_MOC_LITERAL(243, 11),  // "actarrow_up"
+        QT_MOC_LITERAL(255, 13)   // "actarrow_down"
     },
     "MainWindow",
     "lineTextEditChanged",
     "",
     "lineSizeEditChanged",
     "rotateButtonClick",
+    "actNew",
     "actOpen",
     "actSave",
     "actSaveAs",
+    "actExport",
     "actExit",
     "acttool_edit",
     "acttool_size",
@@ -136,7 +144,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
       11,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      19,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -144,25 +152,29 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,  116,    2, 0x0a,    1 /* Public */,
-       3,    0,  117,    2, 0x0a,    2 /* Public */,
-       4,    0,  118,    2, 0x0a,    3 /* Public */,
-       5,    0,  119,    2, 0x0a,    4 /* Public */,
-       6,    0,  120,    2, 0x0a,    5 /* Public */,
-       7,    0,  121,    2, 0x0a,    6 /* Public */,
-       8,    0,  122,    2, 0x0a,    7 /* Public */,
-       9,    0,  123,    2, 0x0a,    8 /* Public */,
-      10,    0,  124,    2, 0x0a,    9 /* Public */,
-      11,    0,  125,    2, 0x0a,   10 /* Public */,
-      12,    0,  126,    2, 0x0a,   11 /* Public */,
-      13,    0,  127,    2, 0x0a,   12 /* Public */,
-      14,    0,  128,    2, 0x0a,   13 /* Public */,
-      15,    0,  129,    2, 0x0a,   14 /* Public */,
-      16,    0,  130,    2, 0x0a,   15 /* Public */,
-      17,    0,  131,    2, 0x0a,   16 /* Public */,
-      18,    0,  132,    2, 0x0a,   17 /* Public */,
+       1,    0,  128,    2, 0x0a,    1 /* Public */,
+       3,    0,  129,    2, 0x0a,    2 /* Public */,
+       4,    0,  130,    2, 0x0a,    3 /* Public */,
+       5,    0,  131,    2, 0x0a,    4 /* Public */,
+       6,    0,  132,    2, 0x0a,    5 /* Public */,
+       7,    0,  133,    2, 0x0a,    6 /* Public */,
+       8,    0,  134,    2, 0x0a,    7 /* Public */,
+       9,    0,  135,    2, 0x0a,    8 /* Public */,
+      10,    0,  136,    2, 0x0a,    9 /* Public */,
+      11,    0,  137,    2, 0x0a,   10 /* Public */,
+      12,    0,  138,    2, 0x0a,   11 /* Public */,
+      13,    0,  139,    2, 0x0a,   12 /* Public */,
+      14,    0,  140,    2, 0x0a,   13 /* Public */,
+      15,    0,  141,    2, 0x0a,   14 /* Public */,
+      16,    0,  142,    2, 0x0a,   15 /* Public */,
+      17,    0,  143,    2, 0x0a,   16 /* Public */,
+      18,    0,  144,    2, 0x0a,   17 /* Public */,
+      19,    0,  145,    2, 0x0a,   18 /* Public */,
+      20,    0,  146,    2, 0x0a,   19 /* Public */,
 
  // slots: parameters
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -199,11 +211,15 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'rotateButtonClick'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'actNew'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'actOpen'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'actSave'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'actSaveAs'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'actExport'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'actExit'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -240,20 +256,22 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->lineTextEditChanged(); break;
         case 1: _t->lineSizeEditChanged(); break;
         case 2: _t->rotateButtonClick(); break;
-        case 3: _t->actOpen(); break;
-        case 4: _t->actSave(); break;
-        case 5: _t->actSaveAs(); break;
-        case 6: _t->actExit(); break;
-        case 7: _t->acttool_edit(); break;
-        case 8: _t->acttool_size(); break;
-        case 9: _t->acttool_dotted_line(); break;
-        case 10: _t->acttool_solid_line(); break;
-        case 11: _t->acttool_remove(); break;
-        case 12: _t->acttool_text(); break;
-        case 13: _t->actarrow_left(); break;
-        case 14: _t->actarrow_right(); break;
-        case 15: _t->actarrow_up(); break;
-        case 16: _t->actarrow_down(); break;
+        case 3: _t->actNew(); break;
+        case 4: _t->actOpen(); break;
+        case 5: _t->actSave(); break;
+        case 6: _t->actSaveAs(); break;
+        case 7: _t->actExport(); break;
+        case 8: _t->actExit(); break;
+        case 9: _t->acttool_edit(); break;
+        case 10: _t->acttool_size(); break;
+        case 11: _t->acttool_dotted_line(); break;
+        case 12: _t->acttool_solid_line(); break;
+        case 13: _t->acttool_remove(); break;
+        case 14: _t->acttool_text(); break;
+        case 15: _t->actarrow_left(); break;
+        case 16: _t->actarrow_right(); break;
+        case 17: _t->actarrow_up(); break;
+        case 18: _t->actarrow_down(); break;
         default: ;
         }
     }
@@ -279,13 +297,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 19;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 19)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 17;
+        _id -= 19;
     }
     return _id;
 }

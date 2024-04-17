@@ -7,6 +7,20 @@ void QGraphicsScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event){
 	qDebug()<<"dragMoveEvent";
 }
 */
+
+void View::save_to_image(const QString & filename, const QString ext){
+	Canvas * canvas = getCanvas();
+		QRectF rect(canvas->getTopLeft().x(), canvas->getTopLeft().y(), scene()->width(), scene()->height());
+		QImage image(canvas->getSize(), QImage::Format_ARGB32_Premultiplied);
+		QPainter painter(&image);
+		scene()->render(&painter,rect, QRectF(-canvas->getSize().width()
+		,-canvas->getSize().height(), scene()->width(), scene()->height()));		
+		QByteArray ba = ext.toLocal8Bit();
+		const char *ext_c = ba.data();		
+		image.save(filename,ext_c);	
+	
+	
+}
 ToolType View::getTool() {
 	if (!mw) mw = static_cast<MainWindow *>(parent()->parent());	
 	return mw->getTool();

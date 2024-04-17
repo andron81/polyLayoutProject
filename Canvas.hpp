@@ -17,7 +17,7 @@ public:
 	
 	bool isMouseInside();
 	QPointF getTopLeft() const  ; 
-
+	void clear();
 	QPointF getBottomRight() const  ;
 	void eraseCurrentItem();
 	QSize getSize() const  ;	

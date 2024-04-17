@@ -21,5 +21,6 @@ class View : public QGraphicsView {
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void update_zoom();
 	void wheelEvent( QWheelEvent * p_event ) override ;
+	void save_to_image(const QString & , const QString);
 	Canvas * getCanvas();
 };

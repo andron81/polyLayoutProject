@@ -47,7 +47,13 @@
 		delete(currentItem);
 		currentItem=nullptr; 
 	}
-
+	void Canvas::clear(){
+		QList<QGraphicsItem *> itemList = view->items();
+		for(auto it = itemList.begin(); it != itemList.end()-1; ++it){			 
+			view->scene()->removeItem( *it );
+			delete (*it);
+		}	
+	}		
 	
 	void Canvas::mouseMoveEvent(QMouseEvent *event){
 						isMouseInsideCanvas=true;
