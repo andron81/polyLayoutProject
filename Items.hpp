@@ -7,17 +7,24 @@ class itemOperations {
 	public:
 	static void setColor(QGraphicsItem * , QColor);
 	static void move(QGraphicsItem *, int);
-	
+	static QJsonObject to_JSON(QGraphicsItem *);
+	static QJsonObject getJsonPicture();	
 };
 
+struct _3points{
+	QPointF 					firstPoint;
+	QPointF 					secondPoint;
+	QPointF 					lastPoint;	
+};
 
 struct item_base {
+	
 	MainWindow* mw;
 	QPen pen;
 	item_base(MainWindow* mw_);
-	virtual int type() const = 0;
-	virtual QJsonObject to_JSON() const = 0;
+	virtual int type() const = 0;	
 	QPen getPen(ToolType , qint8 , qint64 );
+	QPen getPen();
 	MainWindow*	getmw();	
 }; 
 class View;
@@ -54,6 +61,7 @@ class Myline : public item_base,public QGraphicsItem {
 	//point_and_QGraphicsItem findObjectNearBy(QPointF);
 	QPointF findObjectNearBy(QPointF);
 	qint8 getMode();
+	_3points getAllPoints();
 };
 
 class Size : public Myline {
@@ -78,11 +86,12 @@ class Size : public Myline {
 	void moveLeft();
 	void moveUp();
 	void moveDown();
-
+	_3points getAllPoints();
 };
 
 class Text: public item_base, public QGraphicsTextItem {	
 	QPointF 					firstPoint;
+	qreal 						fontSize = 72;
 public:
 	enum { Type = 602 };
 	Text(MainWindow* , QPointF );
@@ -90,6 +99,7 @@ public:
 	QJsonObject to_JSON() const;
 	int type() const;
 	void changeSize(qreal);
+	qreal getSize();
 	void setColor(QColor);
 	void drag(QPointF&);
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override ;
@@ -97,5 +107,6 @@ public:
 	void moveLeft();
 	void moveUp();
 	void moveDown();
+	_3points getAllPoints();	
 }; // class text
 	

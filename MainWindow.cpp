@@ -135,7 +135,7 @@ MainWindow::MainWindow()
 
 		QFileDialog dialog(this);
 		 QStringList filters;
-		 filters << "jpg file (*.jpg)"<< "png file (*.png)"<< "Any files (*)";	
+		 filters << "png file (*.png)";	
 		 dialog.setAcceptMode (QFileDialog :: AcceptSave); 		 
 		 dialog.setNameFilters(filters);		 
 		 QStringList fileNames;
@@ -153,7 +153,28 @@ MainWindow::MainWindow()
 	}
 	void MainWindow::actSave() {
 		view->getCanvas()->select(false);
-		editBlk.setVisible(EditBlockVisible::changeText);
+		
+		if ( fileName.isEmpty() ) {
+			QString filename = QFileDialog::getSaveFileName( nullptr, "Сохранить", ".", "Векторный файл (*.vct)" );
+			if ( filename.isEmpty() ) return;
+			fileName = filename;
+		}
+		
+		QList<QGraphicsItem *> 			itemList = view->items();		
+		QJsonObject m_currentJsonObject 		 = QJsonObject(); 
+		QJsonArray textsArray 					 = m_currentJsonObject["texts"].toArray();
+		
+
+		for(auto it = itemList.begin(); it != itemList.end()-1; it++){
+			QJsonObject js = itemOperations::to_JSON(*it);
+			if (!js.isEmpty() ) textsArray.append(js);
+		}
+		m_currentJsonObject["texts"]=textsArray;
+		
+		QJsonDocument doc = QJsonDocument(m_currentJsonObject);
+		   QFile jsonFile(fileName);
+			jsonFile.open(QFile::WriteOnly);
+			jsonFile.write(doc.toJson());	
 	}
 	void MainWindow::actSaveAs() {				
 		view->getCanvas()->select(false);

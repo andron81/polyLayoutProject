@@ -6,11 +6,74 @@
 MainWindow*	item_base::getmw(){
 	return mw;
 }	
+QPen item_base::getPen(){
+	return pen;
+}
+
 void Text::changeSize(qreal sz){
-	
+	fontSize = sz;
 	setFont(QFont("Arial", sz, QFont::Normal));
 	update();
 }
+qreal Text::getSize(){
+	return fontSize ;
+}
+
+_3points Myline::getAllPoints(){	
+	return {firstPoint,secondPoint};
+}
+_3points Text::getAllPoints(){	
+	return {firstPoint};
+}
+_3points Size::getAllPoints(){	
+	return {firstPoint,secondPoint,lastPoint};
+}
+QJsonObject  itemOperations::to_JSON(QGraphicsItem * item){
+	QJsonObject jsonResult;
+	_3points itemPoints;
+	 int type = item->type();
+		switch (type){
+			case 600:{				
+				Myline* line = static_cast<Myline*>(item);
+				itemPoints = line->getAllPoints();
+				jsonResult["type"] = type;
+				jsonResult["style"] = static_cast<int>(line->getPen().style());
+				jsonResult["width"] = line->getPen().width();
+				jsonResult["x1"]=itemPoints.firstPoint.x();
+				jsonResult["y1"]=itemPoints.firstPoint.y();
+				jsonResult["x2"]=itemPoints.secondPoint.x();
+				jsonResult["y2"]=itemPoints.secondPoint.y();				
+			break;
+			}
+			case 602:{
+				Text* txt = static_cast<Text*>(item);
+				itemPoints = txt->getAllPoints();				 		
+				jsonResult["type"] = type;
+				jsonResult["x"] = itemPoints.firstPoint.x();
+				jsonResult["y"] = itemPoints.firstPoint.y();
+				jsonResult["a"] = txt->rotation() ; //angle
+				jsonResult["s"] = txt->getSize() ; //font size 
+				jsonResult["text"] = txt->toPlainText();
+			break;
+			}
+			case 603:{
+				Size* sz = static_cast<Size*>(item);
+				itemPoints = sz->getAllPoints();				 		
+				jsonResult["type"] = type;
+				jsonResult["x1"] = itemPoints.firstPoint.x();
+				jsonResult["y1"] = itemPoints.firstPoint.y();
+				jsonResult["x2"] = itemPoints.secondPoint.x();
+				jsonResult["y2"] = itemPoints.secondPoint.y();
+				jsonResult["x3"] = itemPoints.lastPoint.x();
+				jsonResult["y4"] = itemPoints.lastPoint.y();
+
+			break;
+			}
+		}
+	return jsonResult;	
+}
+	
+
 void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	switch (item->type()){
 			case 600:{
@@ -628,8 +691,8 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		
 	}
 	
-	void Text::changePoints(QPointF cursorCoord){			
-							
+	void Text::changePoints(QPointF cursorCoord){
+			firstPoint=cursorCoord;
 			setPos( cursorCoord );
 			
 	}
@@ -660,16 +723,21 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			update();
 	}
 	void Text::moveLeft(){
+		
 		setPos( pos().x()-1,pos().y() );
+		firstPoint = pos();
 	}
 	void Text::moveUp(){
 		setPos( pos().x(),pos().y()+1 );
+		firstPoint = pos();
 	}
 	void Text::moveDown(){
 		setPos( pos().x(),pos().y()-1 );	
+		firstPoint = pos();
 	}
 	void Text::moveRight(){
 		setPos( pos().x()+1,pos().y() );
+		firstPoint = pos();
 	}
 	int Text::type() const{
 		return Type;
@@ -703,13 +771,11 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			else return abs(main_line.y1() - main_line.y2());
 	}
 	
-	void Size::setColor(QColor clr_) {pen.setColor(clr_);update(); 
-	qDebug()<<"firstPoint="<<firstPoint;
-	qDebug()<<"secondPoint="<<secondPoint;
-	qDebug()<<"lastPoint="<<lastPoint;
+	void Size::setColor(QColor clr_) {
+		pen.setColor(clr_);update(); 
 	}
 	void Myline::setColor(QColor clr_) {pen.setColor(clr_);update();}
-	void Text::setColor(QColor clr_) {setDefaultTextColor(clr_) ;qDebug()<<"text";pen.setColor(clr_);}
+	void Text::setColor(QColor clr_) {setDefaultTextColor(clr_);pen.setColor(clr_);}
 	
 	void Text::mousePressEvent(QGraphicsSceneMouseEvent *event){
 		

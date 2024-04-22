@@ -34,7 +34,9 @@ class MainWindow : public QMainWindow {
 	ToolType 					currentActiveTool		=	ToolType::none;
 	EditBlock 					editBlk ;
 	QLabel*						labelCoord;
-
+	QString						fileName				=	"";
+	QString						currentDir;
+	
 	
 public slots:
 	void lineTextEditChanged();
