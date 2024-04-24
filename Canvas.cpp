@@ -191,6 +191,9 @@
 			QGraphicsItem* item=itemList.at(i);	
 			if (item->type()==static_cast<int>(ToolType::text)) {	// is item a txt ?			
 				Text* tmpText = static_cast<Text*>( item );
+				qDebug()<<"x"<<(qSin(tmpText->rotation())*((tmpText->getAllPoints()).firstPoint).x());
+				qDebug()<<"y"<<(qCos(tmpText->rotation())*((tmpText->getAllPoints()).firstPoint).y());
+				
 				QRectF r = tmpText->mapToScene(tmpText->boundingRect()).boundingRect();
 				QSizeF sz = r.size();
 				qreal w = sz.width();

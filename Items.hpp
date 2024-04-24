@@ -8,7 +8,7 @@ class itemOperations {
 	static void setColor(QGraphicsItem * , QColor);
 	static void move(QGraphicsItem *, int);
 	static QJsonObject to_JSON(QGraphicsItem *);
-	static QJsonObject getJsonPicture();	
+	static void fillCanvas(MainWindow * , QGraphicsScene * , QJsonDocument);	
 };
 
 struct _3points{

@@ -3,7 +3,7 @@
 #include "View.hpp"
 #include "Canvas.hpp"
 #include "Items.hpp"
-
+#include <QJsonArray>
 
 
 
@@ -150,7 +150,22 @@ MainWindow::MainWindow()
 	void MainWindow::actOpen() {
 		view->getCanvas()->select(false);
 		editBlk.setVisible(EditBlockVisible::changeLength);
+		
+		if (fileName=="") {
+		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", "/", "Vector Draw file (*.vct)" );
+		if ( fileName.isEmpty() ) return;
+		} 
+		QString val;
+		QFile file;
+      file.setFileName(fileName);
+      file.open(QIODevice::ReadOnly | QIODevice::Text);
+      val = file.readAll();
+      file.close();      	  		  
+	  itemOperations::fillCanvas(this,scene,QJsonDocument::fromJson(val.toUtf8()));				
 	}
+		
+		
+	
 	void MainWindow::actSave() {
 		view->getCanvas()->select(false);
 		

@@ -1,6 +1,7 @@
 #include "Items.hpp"
 #include "View.hpp"
 #include "AppSettings.hpp"
+#include <QJsonArray>
 	item_base::item_base(MainWindow* mw_):mw(mw_) {	}
 	
 MainWindow*	item_base::getmw(){
@@ -18,7 +19,59 @@ void Text::changeSize(qreal sz){
 qreal Text::getSize(){
 	return fontSize ;
 }
+void itemOperations::fillCanvas(MainWindow * mw, QGraphicsScene * scene, QJsonDocument doc){					
+			QJsonObject obj = doc.object();			
+			QJsonArray items = obj["texts"].toArray();
+			for (auto v : items) {
+				QJsonObject element = v.toObject();
+					switch (element["type"].toInt())	 {
+						case 602: {
+					Text* itm = new Text(mw, QPointF(element["x"].toInt(),element["y"].toInt()));
+					itm->setPlainText( element["text"].toString() );
+					itm->setRotation(element["a"].toInt());
+					itm->changeSize(element["s"].toInt());
+					scene->addItem(itm);	
+						
+						break;
+						}
+						/* case 6: {
+					vd::items::myline* itm = new vd::items::myline(
+					this,
+					element["x1"].toInt(),
+					element["y1"].toInt(),
+					element["x2"].toInt(),
+					element["y2"].toInt(), 
+					element["style"].toInt(), 
+					element["width"].toInt()
+					);
+					m_view->scene()->addItem(itm);
+						break;
+						}
 
+						case -500: {
+					vd::items::size* itm = new vd::items::size(
+					this, 
+					element["x1"].toInt(), 
+					element["y1"].toInt(),
+					element["x2"].toInt(), 
+					element["y2"].toInt(),
+					element["x3"].toInt(), 
+					element["y3"].toInt(),
+					QLine(element["main_line_x1"].toInt(),
+						  element["main_line_y1"].toInt(),
+						  element["main_line_x2"].toInt(),
+						  element["main_line_y2"].toInt()), 
+					QPen());
+					m_view->scene()->addItem(itm);
+						break;
+					} */
+							
+					}
+			}	
+			
+
+	
+}
 _3points Myline::getAllPoints(){	
 	return {firstPoint,secondPoint};
 }
