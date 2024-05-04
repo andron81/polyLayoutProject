@@ -139,6 +139,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			case 603:{
 				Size* sz = static_cast<Size*>(item);
 				sz->setColor(Color);
+				qDebug()<<"legthxxx="<<sz->getLength();
 				sz->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(sz->getLength()));
 				sz->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
 			break;
@@ -343,12 +344,12 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		}
 		QLineF Size::get_main_line() {return main_line;}
 		void Myline::changeLength(double len) {
-			
+			qDebug()<<"len="<<len;
 			if (isHoriLine()) 
 				changesecondPointCoord(QPointF(firstPoint.x()+len,secondPoint.y()) , true);				
 			
 			else 
-				changesecondPointCoord(QPointF(firstPoint.x(),secondPoint.y()+len) , true);				
+				changesecondPointCoord(QPointF(secondPoint.x(),firstPoint.y()+len) , true);				
 			
 		}
 		void Myline::drag(QPointF mouseCord , QPointF& 	currentItemPoint){
@@ -377,13 +378,12 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			update();			
 		}
 		
-		void Size::changeLength(double len) {
-			
+		void Size::changeLength(double len) {			
 			if (isHoriLine()) 
-				changesecondPointCoord(QPointF(firstPoint.x()+len,secondPoint.y()) , true);				
+				changesecondPointCoord(QPointF(secondPoint.x()+len,secondPoint.y()) , true);				
 			
 			else 
-				changesecondPointCoord(QPointF(firstPoint.x(),secondPoint.y()+len) , true);				
+				changesecondPointCoord(QPointF(firstPoint.x(),firstPoint.y()+len) , true);				
 			
 		}		
 		void Myline::changePoints(QPointF cursorCoord){			
@@ -817,9 +817,10 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	}
 	
 		bool Size::isHoriLine() const  {
-		return main_line.y1()==main_line.y1();		
+		return main_line.y1()==main_line.y2();		
 	}
 	qreal Size::getLength() const {
+		qDebug()<<"len="<<isHoriLine()<<" "<<abs(main_line.y1() - main_line.y2());
 		if (isHoriLine()) return abs(main_line.x1() - main_line.x2());
 			else return abs(main_line.y1() - main_line.y2());
 	}

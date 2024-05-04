@@ -191,16 +191,53 @@
 			QGraphicsItem* item=itemList.at(i);	
 			if (item->type()==static_cast<int>(ToolType::text)) {	// is item a txt ?			
 				Text* tmpText = static_cast<Text*>( item );
-				qDebug()<<"x"<<(qSin(tmpText->rotation())*((tmpText->getAllPoints()).firstPoint).x());
-				qDebug()<<"y"<<(qCos(tmpText->rotation())*((tmpText->getAllPoints()).firstPoint).y());
-				
 				QRectF r = tmpText->mapToScene(tmpText->boundingRect()).boundingRect();
 				QSizeF sz = r.size();
+
 				qreal w = sz.width();
 				qreal h = sz.height();
-					if (mouseCoord.x()>tmpText->pos().x() && mouseCoord.x()<tmpText->pos().x()+w &&
-						mouseCoord.y()>tmpText->pos().y() && mouseCoord.y()<tmpText->pos().y()+h
-					) {result = item;
+				qreal xPos	;
+				qreal yPos	;
+				
+		
+								
+				
+				qDebug()<<"ugol="<<tmpText->rotation()	;
+				if (tmpText->rotation()==90){
+					qDebug()<<w<<" "<<h;
+					qDebug()<<"pos0="<<tmpText->pos().x()<<" "<<tmpText->pos().y();
+					qDebug()<<"after="<<(tmpText->pos().x()-w)<<" "<<(tmpText->pos().y()-h );
+				}		
+				
+					if ((tmpText->rotation()==0 && 
+						mouseCoord.x()>tmpText->pos().x() && 
+						mouseCoord.x()<tmpText->pos().x()+w &&
+						mouseCoord.y()>tmpText->pos().y() && 
+						mouseCoord.y()<tmpText->pos().y()+h
+					) || 
+						(tmpText->rotation()==90 && 
+						mouseCoord.x()>tmpText->pos().x()-w && 
+						mouseCoord.x()<tmpText->pos().x() &&
+						mouseCoord.y()>tmpText->pos().y() && 
+						mouseCoord.y()<tmpText->pos().y()+h 
+					)
+						|| 
+						(tmpText->rotation()==180 && 
+						mouseCoord.x()>tmpText->pos().x()-w && 
+						 mouseCoord.x()<tmpText->pos().x() &&
+						 mouseCoord.y()<tmpText->pos().y() && 
+						 mouseCoord.y()>tmpText->pos().y()-h
+					)	
+						|| 
+						(tmpText->rotation()==270 && 
+						mouseCoord.x()<tmpText->pos().x()+w && 
+						 mouseCoord.x()>tmpText->pos().x() &&
+						 mouseCoord.y()<tmpText->pos().y() && 
+						 mouseCoord.y()>tmpText->pos().y()-h
+					)	
+					
+					)	
+					{result = item;
 						minDistance=-1;}
 	
 				
