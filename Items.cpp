@@ -34,37 +34,26 @@ void itemOperations::fillCanvas(MainWindow * mw, QGraphicsScene * scene, QJsonDo
 						
 						break;
 						}
-						/* case 6: {
-					vd::items::myline* itm = new vd::items::myline(
-					this,
-					element["x1"].toInt(),
-					element["y1"].toInt(),
-					element["x2"].toInt(),
-					element["y2"].toInt(), 
-					element["style"].toInt(), 
-					element["width"].toInt()
-					);
-					m_view->scene()->addItem(itm);
+						 case 603: {
+					Size* size = new Size(mw,{element["x1"].toDouble(),element["y1"].toDouble()});
+					size->changesecondPointCoord({element["x2"].toDouble(),element["y2"].toDouble()},true);
+					size->changelastPointCoord({element["x3"].toDouble(),element["y3"].toDouble()});
+					for (qint8 i=0; i<3;i++)
+					size->changeMode();
+	
+					scene->addItem(size);
 						break;
 						}
-
-						case -500: {
-					vd::items::size* itm = new vd::items::size(
-					this, 
-					element["x1"].toInt(), 
-					element["y1"].toInt(),
-					element["x2"].toInt(), 
-					element["y2"].toInt(),
-					element["x3"].toInt(), 
-					element["y3"].toInt(),
-					QLine(element["main_line_x1"].toInt(),
-						  element["main_line_y1"].toInt(),
-						  element["main_line_x2"].toInt(),
-						  element["main_line_y2"].toInt()), 
-					QPen());
-					m_view->scene()->addItem(itm);
+						case 600:{				
+					Myline* line = new Myline(mw,{element["x1"].toDouble(),element["y1"].toDouble()});
+					line->changesecondPointCoord({element["x2"].toDouble(),element["y2"].toDouble()},true);				
+					for (qint8 i=0; i<2;i++) line->changeMode();
+					line->setItemPen(599+element["style"].toInt(),
+							 mw->getSettings()->getValue("lineWidth").toInt(),
+							 mw->getSettings()->getValue("lineColorDefault").toString().toInt(0, 16));
+					scene->addItem(line);
 						break;
-					} */
+						}
 							
 					}
 			}	
@@ -118,7 +107,7 @@ QJsonObject  itemOperations::to_JSON(QGraphicsItem * item){
 				jsonResult["x2"] = itemPoints.secondPoint.x();
 				jsonResult["y2"] = itemPoints.secondPoint.y();
 				jsonResult["x3"] = itemPoints.lastPoint.x();
-				jsonResult["y4"] = itemPoints.lastPoint.y();
+				jsonResult["y3"] = itemPoints.lastPoint.y();
 
 			break;
 			}
@@ -224,7 +213,16 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		pen.setColor(color);
 		return pen;
 	};
-
+	void Myline::setItemPen(qint64 style, qint8 width, qint64 color){		
+		qDebug()<<"style="<<style;
+		switch (style) {
+			case 600: pen.setStyle(Qt::SolidLine);break;
+			case 601: pen.setStyle(Qt::DashLine);break;
+		}
+		pen.setWidth(width);
+		pen.setColor(color);
+		qDebug()<<pen;		
+	}
 	Myline::Myline(MainWindow* mw_,QPointF firstPoint_):mode(0),item_base(mw_),firstPoint(firstPoint_),
 	style(style){
 		
@@ -734,6 +732,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			lastPoint=Point_;
 			update();
 	}
+
 	
 	Text::Text(MainWindow* mw_, QPointF firstPoint_):	
 			item_base(mw_){				
@@ -749,6 +748,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			setPos( cursorCoord );
 			
 	}
+
 	
 	void Size::moveLeft(){
 			firstPoint={firstPoint.x()-1,firstPoint.y()};

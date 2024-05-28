@@ -62,6 +62,7 @@ class Myline : public item_base,public QGraphicsItem {
 	QPointF findObjectNearBy(QPointF);
 	qint8 getMode();
 	_3points getAllPoints();
+	void setItemPen(qint64 , qint8 , qint64);
 };
 
 class Size : public Myline {

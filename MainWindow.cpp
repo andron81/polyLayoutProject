@@ -15,6 +15,8 @@ View * MainWindow::getView(){
 }
 void MainWindow::rotateButtonClick(){
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+	if (itemTmp->rotation()+90>270) itemTmp->setRotation(0); 
+		else
 	itemTmp->setRotation(itemTmp->rotation()+90);
 }	
 void MainWindow::lineSizeEditChanged() {
@@ -151,29 +153,39 @@ MainWindow::MainWindow()
 		view->getCanvas()->select(false);
 		editBlk.setVisible(EditBlockVisible::changeLength);
 		
-		if (fileName=="") {
-		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", "/", "Vector Draw file (*.vct)" );
+		
+		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", ".", "Vector Draw file (*.vct)" );
 		if ( fileName.isEmpty() ) return;
-		} 
+		refreshFileInfo(fileName);
+		view->getCanvas()->clear();	
+		qDebug()<<"currentDir="<<currentDir;
+		qDebug()<<"fileName="<<fileName;
 		QString val;
 		QFile file;
-      file.setFileName(fileName);
+      file.setFileName(currentDir+"/"+fileName);
       file.open(QIODevice::ReadOnly | QIODevice::Text);
       val = file.readAll();
       file.close();      	  		  
 	  itemOperations::fillCanvas(this,scene,QJsonDocument::fromJson(val.toUtf8()));				
 	}
-		
-		
-	
-	void MainWindow::actSave() {
+	void MainWindow::refreshFileInfo(QString filename){
+		QFileInfo fi = QFileInfo(filename);
+			currentDir = fi.dir().path() ;
+			fileName   = fi.fileName();	
+			
+			setWindowTitle(QFileInfo(QCoreApplication::applicationName()).baseName()
+			+" "+ currentDir +"/"+fileName
+			);
+	}
+	void MainWindow::saveFile(bool dialog=false) {
 		view->getCanvas()->select(false);
-		
-		if ( fileName.isEmpty() ) {
+		if (fileName.isEmpty()) currentDir = ".";
+		if ( !dialog || fileName.isEmpty() ) {
 			QString filename = QFileDialog::getSaveFileName( nullptr, "Сохранить", ".", "Векторный файл (*.vct)" );
-			if ( filename.isEmpty() ) return;
-			fileName = filename;
+			if ( filename.isEmpty() ) return;			
+			refreshFileInfo(filename);	
 		}
+		qDebug()<<"currentDir="<<QFileInfo(fileName).dir().dirName();
 		
 		QList<QGraphicsItem *> 			itemList = view->items();		
 		QJsonObject m_currentJsonObject 		 = QJsonObject(); 
@@ -191,9 +203,14 @@ MainWindow::MainWindow()
 			jsonFile.open(QFile::WriteOnly);
 			jsonFile.write(doc.toJson());	
 	}
+	
+	void MainWindow::actSave() {
+		saveFile(true);
+	}
 	void MainWindow::actSaveAs() {				
-		view->getCanvas()->select(false);
-		qDebug()<<"SaveAs";
+		saveFile();
+		
+		
 	}
 	void MainWindow::actExit() {
 		qDebug()<<"Exit";

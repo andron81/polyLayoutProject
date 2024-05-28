@@ -64,6 +64,8 @@ public:
 	ToolType getTool();
 	AppSettings	* getSettings();
 	void setCoordLabel(QString);
+	void saveFile(bool dialog); 
+	void refreshFileInfo(QString);
 	const QVector<itemsMenuType> filemenuItems = {
 		{"Новый",  	 &MainWindow::actNew},
 		{"Открыть",  	 &MainWindow::actOpen},
