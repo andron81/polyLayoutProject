@@ -5,11 +5,11 @@
 #include "math.h"
 
 	
-	Canvas::Canvas(View* view_ ):view(view_)  {
+	Canvas::Canvas(View* view_ ):view(view_)  {		
 		setFlag( QGraphicsItem::ItemStacksBehindParent );
 		setPen( Qt::NoPen );
 		setBrush( QColor( 255, 255, 255 ) );
-	
+		setSize(QSize(100,100));
 		QGraphicsDropShadowEffect * effect = new QGraphicsDropShadowEffect;
 		effect->setBlurRadius( 32.f );
 		effect->setOffset( 0 );
@@ -136,7 +136,9 @@
 			}
 		}
 	}
-	ToolType Canvas::getTool(){return getView()->getTool();}
+	ToolType Canvas::getTool(){
+		return getView()->getTool();
+	}
 	void Canvas::mouseReleaseEvent(){
 		isMouseHold=false;
 	}

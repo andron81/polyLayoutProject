@@ -121,10 +121,15 @@ MainWindow::MainWindow()
 		scene = new QGraphicsScene( -1000/*x*/, -1000/*y*/, 2000/*w*/, 2000/*h*/, widgetView );
 		view = new View( scene, widgetView );		
 		layoutMain->addWidget( view );
-		
-		
-		
 		view->setFocus();
+		
+		currentDir = QDir::currentPath()+"/"+(*settings)["currentDir"].toString();
+		
+		QString fn = (*settings)["fn"].toString();
+		if (fn!="") Open(fn);
+			
+		
+		
 	}
 	
 	ToolType MainWindow::getTool() {
@@ -149,16 +154,17 @@ MainWindow::MainWindow()
 	void MainWindow::actNew() {
 		view->getCanvas()->clear();
 	}
-	void MainWindow::actOpen() {
-		view->getCanvas()->select(false);
+	
+	void MainWindow::Open(QString fn="") {
+			view->getCanvas()->select(false);
 		editBlk.setVisible(EditBlockVisible::changeLength);
-		
-		
-		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", ".", "Vector Draw file (*.vct)" );
+		if (fn!="") fileName=currentDir+"/"+fn+".vct";
+		else
+		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", currentDir, "Vector Draw file (*.vct)" );
 		if ( fileName.isEmpty() ) return;
 		refreshFileInfo(fileName);
 		view->getCanvas()->clear();	
-		qDebug()<<"currentDir="<<currentDir;
+		
 		qDebug()<<"fileName="<<fileName;
 		QString val;
 		QFile file;
@@ -166,7 +172,11 @@ MainWindow::MainWindow()
       file.open(QIODevice::ReadOnly | QIODevice::Text);
       val = file.readAll();
       file.close();      	  		  
-	  itemOperations::fillCanvas(this,scene,QJsonDocument::fromJson(val.toUtf8()));				
+	  itemOperations::fillCanvas(this,scene,QJsonDocument::fromJson(val.toUtf8()));	
+	  }
+	
+	void MainWindow::actOpen() {
+		Open();
 	}
 	void MainWindow::refreshFileInfo(QString filename){
 		QFileInfo fi = QFileInfo(filename);
@@ -179,13 +189,14 @@ MainWindow::MainWindow()
 	}
 	void MainWindow::saveFile(bool dialog=false) {
 		view->getCanvas()->select(false);
-		if (fileName.isEmpty()) currentDir = ".";
+		
+		qDebug()<<"currentDir from saveFile="<<currentDir;
 		if ( !dialog || fileName.isEmpty() ) {
-			QString filename = QFileDialog::getSaveFileName( nullptr, "Сохранить", ".", "Векторный файл (*.vct)" );
+			QString filename = QFileDialog::getSaveFileName( nullptr, "Сохранить", currentDir, "Векторный файл (*.vct)" );
 			if ( filename.isEmpty() ) return;			
 			refreshFileInfo(filename);	
 		}
-		qDebug()<<"currentDir="<<QFileInfo(fileName).dir().dirName();
+		
 		
 		QList<QGraphicsItem *> 			itemList = view->items();		
 		QJsonObject m_currentJsonObject 		 = QJsonObject(); 
@@ -199,9 +210,9 @@ MainWindow::MainWindow()
 		m_currentJsonObject["texts"]=textsArray;
 		
 		QJsonDocument doc = QJsonDocument(m_currentJsonObject);
-		   QFile jsonFile(fileName);
+		   QFile jsonFile(currentDir +"/"+fileName);
 			jsonFile.open(QFile::WriteOnly);
-			jsonFile.write(doc.toJson());	
+			jsonFile.write(doc.toJson());					
 	}
 	
 	void MainWindow::actSave() {

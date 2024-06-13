@@ -1,6 +1,7 @@
 #include "View.hpp"
 #include "MainWindow.hpp"
 #include "Canvas.hpp"
+#include "AppSettings.hpp"
 
 /*
 void QGraphicsScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event){
@@ -21,8 +22,8 @@ void View::save_to_image(const QString & filename, const QString ext){
 	
 	
 }
-ToolType View::getTool() {
-	if (!mw) mw = static_cast<MainWindow *>(parent()->parent());	
+ToolType View::getTool() {	
+	//mw = static_cast<MainWindow *>(parent()->parent());
 	return mw->getTool();
 }
 	bool View::isMouseInsideCanvas(QPointF 	mouseCoord) {
@@ -34,16 +35,19 @@ ToolType View::getTool() {
 
 	View::View( QGraphicsScene * p_scene, QWidget * p_parent )
 		: QGraphicsView( p_scene, p_parent ),
-		  canvas(new Canvas(this))
-	{		
+		  canvas(new Canvas(this)){		
 		setRenderHint( QPainter::Antialiasing, true );
 		setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
 		setTransformationAnchor( QGraphicsView::AnchorUnderMouse );
 		setBackgroundBrush( Qt::gray );
 		centerOn( 0, 0 );
-
-		canvas->setSize(QSize(1000,700));
 		scene()->addItem( canvas );
+		mw=static_cast<MainWindow *>(p_parent->parent()->parent());
+		QString CanvSZ = mw->getSettings()->getValue("cs").toString();
+		qDebug()<<"1c="<<mw->getSettings()->getValue("mode").toString();
+		
+		QStringList cs = CanvSZ.split("x");
+		canvas->setSize({cs[0].toInt(),cs[1].toInt()});
 		connect( scene(), &QGraphicsScene::focusItemChanged, this,
 			[&]( QGraphicsItem * p_new, QGraphicsItem * p_old, Qt::FocusReason reason ) {
 			} );

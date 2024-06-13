@@ -35,9 +35,9 @@ class MainWindow : public QMainWindow {
 	EditBlock 					editBlk ;
 	QLabel*						labelCoord;
 	QString						fileName				=	"";
-	QString						currentDir;
+	QString						currentDir				= 	".";
 	
-	
+	void Open(QString);
 public slots:
 	void lineTextEditChanged();
 	void lineSizeEditChanged();

@@ -2,19 +2,43 @@
 	
 	AppSettings::AppSettings( )
 		: QSettings( QFileInfo( QCoreApplication::applicationFilePath() ).baseName() + ".ini", QSettings::IniFormat ){
+		parseCmdLn.setApplicationDescription("myApp");
+		parseCmdLn.addHelpOption();
+		parseCmdLn.addVersionOption();
+		// options list:
+		for (auto i = outputOptions.begin(); i != outputOptions.end(); i++)
+			parseCmdLn.addOption(i.value());
+		parseCmdLn.process(QCoreApplication::arguments());
+
+		QMap<QString, QCommandLineOption>::const_iterator it = outputOptions.find("c");
 			Q_ASSERT( QFile( fileName()).exists() );
 			beginGroup( "MainWindow" );
 			QStringList keys = allKeys(); 
-			for ( const auto& i : keys )
-				params[i] = value(i);
-			endGroup();
+		for ( const auto& i : keys )
+			params[i] = value(i);
+		endGroup();
 		}
-
-	QVariant AppSettings::operator[](QString key) {				
+	QString AppSettings::getParamCmdLn(QString paramName){
+		
+	QMap<QString, QCommandLineOption>::const_iterator it = outputOptions.find(paramName);
+	
+	if(it != outputOptions.end())
+      return parseCmdLn.value(it.value()); 
+	else return ""; 
+		
+	}
+	QVariant AppSettings::operator[](QString key) {	
+	QString tmp = getParamCmdLn(key);
+	qDebug()<<key<<" "<<tmp;
+	if (tmp!="") return tmp; else
 		return params[key];		
 	}
 	QVariant AppSettings::getValue(QString key){
-		return params[key];
+	QString tmp = getParamCmdLn(key);
+	qDebug()<<key<<" "<<tmp;
+	if (tmp!="") return tmp; else
+		return params[key];		
+
 	}
 
 	void AppSettings::save() {
