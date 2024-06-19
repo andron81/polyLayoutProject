@@ -43,8 +43,7 @@ ToolType View::getTool() {
 		centerOn( 0, 0 );
 		scene()->addItem( canvas );
 		mw=static_cast<MainWindow *>(p_parent->parent()->parent());
-		QString CanvSZ = mw->getSettings()->getValue("cs").toString();
-		qDebug()<<"1c="<<mw->getSettings()->getValue("mode").toString();
+		QString CanvSZ = mw->getSettings()->getValue("cs").toString();		
 		
 		QStringList cs = CanvSZ.split("x");
 		canvas->setSize({cs[0].toInt(),cs[1].toInt()});

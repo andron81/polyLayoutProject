@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow {
 	QLabel*						labelCoord;
 	QString						fileName				=	"";
 	QString						currentDir				= 	".";
+	bool						mode					;
 	
 	void Open(QString);
 public slots:
@@ -74,6 +75,9 @@ public:
 		{"Экспортировать как",&MainWindow::actExport},
 		{"Выход",	 &MainWindow::actExit}
 	};
+	const QVector<itemsMenuType> filemenuItemsMode1C = {
+		{"Выход",	 &MainWindow::actExit}
+	};
 	const QVector<itemsButtonType> toolButtons = {
 		{"Редактировать", "tool_edit.svg", 	 &MainWindow::acttool_edit,true},
 		{"Размер",	 "tool_size.svg",&MainWindow::acttool_size,true},
@@ -81,6 +85,7 @@ public:
 		{"Пунктирная линия","tool_line_dashed.svg"	 ,&MainWindow::acttool_dotted_line,true},		
 		{"Текст","tool_text.svg"	,&MainWindow::acttool_text,true}
 	};
+	
 	const QVector<itemsButtonType> modifyactButtons = {
 		{"Удалить",	"tool_remove.svg", &MainWindow::acttool_remove,false},
 		{"Сдвиг влево", "left_svgrepo_com.svg",	 &MainWindow::actarrow_left,false},

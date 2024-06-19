@@ -162,7 +162,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		secondPoint.setY(secondPoint.y()+step);
 			update();
 	}
-	void Myline::moveDown(){		
+	void Myline::moveDown(){	
 		qint8 step = mw->getSettings()->getValue("moveStep").toInt();		
 		firstPoint.setY(firstPoint.y()	-step);
 		secondPoint.setY(secondPoint.y()-step);

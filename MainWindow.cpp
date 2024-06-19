@@ -15,6 +15,7 @@ View * MainWindow::getView(){
 }
 void MainWindow::rotateButtonClick(){
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+	view->getCanvas()->edit();
 	if (itemTmp->rotation()+90>270) itemTmp->setRotation(0); 
 		else
 	itemTmp->setRotation(itemTmp->rotation()+90);
@@ -22,6 +23,7 @@ void MainWindow::rotateButtonClick(){
 void MainWindow::lineSizeEditChanged() {
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();	
 	if (itemTmp) {
+		view->getCanvas()->edit();
 	if (itemTmp->type()==600)
 	static_cast<Myline*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());
 	else 
@@ -36,6 +38,7 @@ void MainWindow::lineSizeEditChanged() {
 }
 void MainWindow::lineTextEditChanged() {
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+	view->getCanvas()->edit();
 	static_cast<Text*>(itemTmp)->setPlainText(editBlk.lineTextEdit->text());
 }
 void MainWindow::setCoordLabel(QString txt){
@@ -71,6 +74,7 @@ MainWindow::MainWindow()
 							}
 			} 
 		};
+		mode = getSettings()->getValue("md").toBool();
 		labelCoord = new QLabel;
 		statusBar()->addWidget(labelCoord);
 		editBlk.widgetmodifyAct->setEnabled(false);
@@ -79,6 +83,9 @@ MainWindow::MainWindow()
 		resize( 1280, 720 );
 		setGeometry( (*settings)["geometry"].toRect() );
 		QMenuBar * mainMenu = new QMenuBar;
+		if (mode)
+		addRootItemMenu ("Файл", mainMenu, filemenuItemsMode1C);
+		else 
 		addRootItemMenu ("Файл", mainMenu, filemenuItems);
 		setMenuBar(mainMenu);
 	//main widget & main layer
@@ -123,9 +130,10 @@ MainWindow::MainWindow()
 		layoutMain->addWidget( view );
 		view->setFocus();
 		
-		currentDir = QDir::currentPath()+"/"+(*settings)["currentDir"].toString();
+		currentDir = QDir::currentPath()+"/"+ getSettings()->getValue("currentDir").toString();		
+		QString fn = getSettings()->getValue("fn").toString();
 		
-		QString fn = (*settings)["fn"].toString();
+		
 		if (fn!="") Open(fn);
 			
 		
@@ -246,7 +254,10 @@ MainWindow::MainWindow()
 		qDebug()<<"tool_solid_line";
 	}
 	void MainWindow::acttool_remove() {
-		view->getCanvas()->eraseCurrentItem();	
+		if (view->getCanvas()->getCurrentItem()) {
+		view->getCanvas()->eraseCurrentItem();
+		view->getCanvas()->edit();	
+		}
 	}
 	void MainWindow::acttool_text() {
 		view->getCanvas()->select(false);
@@ -257,20 +268,23 @@ MainWindow::MainWindow()
 	void MainWindow::actarrow_left() {
 		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
 		itemOperations::move(itemTmp, 0);
+		view->getCanvas()->edit();
 	}
 	void MainWindow::actarrow_right() {
 		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
 		itemOperations::move(itemTmp, 1);
+		view->getCanvas()->edit();
 	}
 	void MainWindow::actarrow_down() {
 		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
 		itemOperations::move(itemTmp, 2);
+		view->getCanvas()->edit();
 		}	
 	
 	void MainWindow::actarrow_up() {
-		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();
+		QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();	
 		itemOperations::move(itemTmp, 3);
-
+		view->getCanvas()->edit();
 	}
 
 	void EditBlock::setVisible(EditBlockVisible flag) {

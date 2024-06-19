@@ -42,7 +42,7 @@
 			eraseCurrentItem();
 	}
 
-	void Canvas::eraseCurrentItem(){
+	void Canvas::eraseCurrentItem(){		
 		getView()->scene()->removeItem(currentItem); 
 		delete(currentItem);
 		currentItem=nullptr; 
@@ -72,7 +72,7 @@
 		}
 		case ToolType::edit:	{
 			if (isMouseHold && currentItem) {
-			
+				edit();
 				if (currentItem->type()==600)
 				static_cast<Myline*>(currentItem)->drag(cursorCoord, currentItemPoint);
 				if (currentItem->type()==603)
@@ -97,13 +97,11 @@
 			}
 		case ToolType::text:	{
 			
-			if (!currentItem) {
-				
+			if (!currentItem) {					
 					currentItem = new Text(
 										 MW,
 										 QPointF(cursorCoord.x(),cursorCoord.y())
-										  );
-					
+										  );					
 					getView()->scene()->addItem(currentItem);					 
 					
 
@@ -121,7 +119,10 @@
 	bool Canvas::isMouseInside() {return isMouseInsideCanvas;}
 	
 	View* Canvas::getView() const  {return view;}
-
+	
+	void Canvas::edit() {qDebug()<<"isEdit=true;";isEdit=true;}
+	bool Canvas::getisEdit() {return isEdit;}
+	
 	void Canvas::select(bool flag) {
 		QColor tmpColor;
 		if (currentItem && getTool()==ToolType::edit) {
@@ -152,7 +153,7 @@
 					Myline* line	= static_cast<Myline*>(currentItem);						
 					line->changeMode();
 					line->changesecondPointCoord(mouseCoord,false);							
-					if (line->getMode()>1) {currentItem=nullptr;}
+					if (line->getMode()>1) {currentItem=nullptr; edit();}					
 					break;
 				}
 				case ToolType::size: {					
@@ -161,16 +162,17 @@
 					switch (size->getMode()){
 					case 1: size->changesecondPointCoord(mouseCoord); break;
 					case 2: size->changelastPointCoord(mouseCoord); break;		
-					case 3: currentItem=nullptr;  break;		
+					case 3: currentItem=nullptr; edit(); break;		
 					}
 					break;
 				}
 				case ToolType::text: {
+					edit();
 					currentItem=nullptr;	
 					break;
 				}
 				case ToolType::edit: {
-					select(false);
+					//select(false);
 					FindNearbyItem(mouseCoord);
 					if (currentItem) select(true);																	
 					break;

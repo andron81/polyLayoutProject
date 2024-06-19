@@ -10,11 +10,12 @@ class Canvas : public QGraphicsRectItem {
 	View* 					view;
 	QGraphicsItem*			currentItem = nullptr;
 	QPointF					currentItemPoint;
-	
+	bool 					isEdit = false;					
 
 public:
 	Canvas(View* );
-	
+	void edit();
+	bool getisEdit();
 	bool isMouseInside();
 	QPointF getTopLeft() const  ; 
 	void clear();

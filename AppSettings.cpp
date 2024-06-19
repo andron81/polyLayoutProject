@@ -22,8 +22,12 @@
 		
 	QMap<QString, QCommandLineOption>::const_iterator it = outputOptions.find(paramName);
 	
-	if(it != outputOptions.end())
-      return parseCmdLn.value(it.value()); 
+	if(it != outputOptions.end()) {
+		if (it.value().valueName()=="") {return QString::number(parseCmdLn.isSet(it.value()));} 
+			else {
+				return parseCmdLn.value(it.value());
+			} 
+	}
 	else return ""; 
 		
 	}
