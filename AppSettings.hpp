@@ -8,7 +8,7 @@ class AppSettings :public QSettings {
 		{"fn" 		, QCommandLineOption(QStringList() << "f" << "fn", "file-option" ,"file-name-value")},
 		{"cs" 		, QCommandLineOption(QStringList() << "c" << "cs"<<"canvassize", "canvas-size-option","canvas-size-value")},
 		{"md" 		, QCommandLineOption(QStringList() << "m" << "md"<<"mode" , "mode")},
-		{"currentDir", QCommandLineOption(QStringList() << "d" << "currentDir", "current-Dir-option", "currentDir-value")}
+		{"currentDir", QCommandLineOption(QStringList() << "d" <<"cd" << "currentDir", "current-Dir-option", "currentDir-value")}
 		
 		
 	};

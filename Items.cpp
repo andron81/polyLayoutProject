@@ -128,7 +128,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			case 603:{
 				Size* sz = static_cast<Size*>(item);
 				sz->setColor(Color);
-				qDebug()<<"legthxxx="<<sz->getLength();
 				sz->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(sz->getLength()));
 				sz->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
 			break;
@@ -214,14 +213,12 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		return pen;
 	};
 	void Myline::setItemPen(qint64 style, qint8 width, qint64 color){		
-		qDebug()<<"style="<<style;
 		switch (style) {
 			case 600: pen.setStyle(Qt::SolidLine);break;
 			case 601: pen.setStyle(Qt::DashLine);break;
 		}
 		pen.setWidth(width);
 		pen.setColor(color);
-		qDebug()<<pen;		
 	}
 	Myline::Myline(MainWindow* mw_,QPointF firstPoint_):mode(0),item_base(mw_),firstPoint(firstPoint_),
 	style(style){
@@ -341,8 +338,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 				return result;
 		}
 		QLineF Size::get_main_line() {return main_line;}
-		void Myline::changeLength(double len) {
-			qDebug()<<"len="<<len;
+		void Myline::changeLength(double len) {			
 			if (isHoriLine()) 
 				changesecondPointCoord(QPointF(firstPoint.x()+len,secondPoint.y()) , true);				
 			
@@ -378,7 +374,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		
 		void Size::changeLength(double len) {			
 			if (isHoriLine()) 
-				changesecondPointCoord(QPointF(secondPoint.x()+len,secondPoint.y()) , true);				
+				changesecondPointCoord(QPointF(firstPoint.x()+len,firstPoint.y()) , true);				
 			
 			else 
 				changesecondPointCoord(QPointF(firstPoint.x(),firstPoint.y()+len) , true);				
@@ -668,14 +664,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		bool 							loca; //location of line (vert or hori)		
 		QList<QGraphicsItem *> 			itemList = scene()->views()[0]->items();
 		int 							sz=itemList.size();
-			//qDebug()<<"firstPoint="<<firstPoint<<" Point_="<<Point_;
-			//if (abs(firstPoint.x()-result.x()) < abs(firstPoint.y() - result.y())) 				
-			//		loca=true;
-			//else 				
-			//		loca=false; 
-		
-			
-		/////
 		for (qsizetype i = 1; i < sz; i++) { 
 			QGraphicsItem* item=itemList.at(i);							
 			if (item->type()==600) {							
@@ -718,9 +706,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 					result.setY(linecoord.y1()); break;}
 					} 
 				} //for
-				//if (!(result.x()==firstPoint.x() || result.y()==firstPoint.y()))  
-					//	result = Point_;			
-								//qDebug()<<"firstPoint2="<<firstPoint<<" Point_="<<Point_;
 				return result;
 		}
 
@@ -735,7 +720,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 
 	
 	Text::Text(MainWindow* mw_, QPointF firstPoint_):	
-			item_base(mw_){				
+			item_base(mw_),firstPoint(firstPoint_){				
 				setDefaultTextColor(pen.color() );
 			setPos( firstPoint_ );
 			setFont( QFont( "Arial", 72) );
@@ -820,7 +805,6 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		return main_line.y1()==main_line.y2();		
 	}
 	qreal Size::getLength() const {
-		qDebug()<<"len="<<isHoriLine()<<" "<<abs(main_line.y1() - main_line.y2());
 		if (isHoriLine()) return abs(main_line.x1() - main_line.x2());
 			else return abs(main_line.y1() - main_line.y2());
 	}

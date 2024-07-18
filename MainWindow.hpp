@@ -39,6 +39,11 @@ class MainWindow : public QMainWindow {
 	bool						mode					;
 	
 	void Open(QString);
+	void Export(QString);
+	void Confirm();
+	void saveFile(bool dialog); 
+	
+
 public slots:
 	void lineTextEditChanged();
 	void lineSizeEditChanged();
@@ -59,13 +64,14 @@ public slots:
 	void actarrow_right();
 	void actarrow_up();
 	void actarrow_down();
+protected:
+void closeEvent(QCloseEvent * ) override; 
 public:
 	EditBlock& geteditBlk();
 	View * getView();
 	ToolType getTool();
 	AppSettings	* getSettings();
-	void setCoordLabel(QString);
-	void saveFile(bool dialog); 
+	void setCoordLabel(QString);	
 	void refreshFileInfo(QString);
 	const QVector<itemsMenuType> filemenuItems = {
 		{"Новый",  	 &MainWindow::actNew},

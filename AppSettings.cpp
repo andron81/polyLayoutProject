@@ -33,13 +33,11 @@
 	}
 	QVariant AppSettings::operator[](QString key) {	
 	QString tmp = getParamCmdLn(key);
-	qDebug()<<key<<" "<<tmp;
 	if (tmp!="") return tmp; else
 		return params[key];		
 	}
 	QVariant AppSettings::getValue(QString key){
 	QString tmp = getParamCmdLn(key);
-	qDebug()<<key<<" "<<tmp;
 	if (tmp!="") return tmp; else
 		return params[key];		
 

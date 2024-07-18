@@ -120,7 +120,7 @@
 	
 	View* Canvas::getView() const  {return view;}
 	
-	void Canvas::edit() {qDebug()<<"isEdit=true;";isEdit=true;}
+	void Canvas::edit(bool e) {isEdit=e;}
 	bool Canvas::getisEdit() {return isEdit;}
 	
 	void Canvas::select(bool flag) {
@@ -172,7 +172,7 @@
 					break;
 				}
 				case ToolType::edit: {
-					//select(false);
+					select(false);
 					FindNearbyItem(mouseCoord);
 					if (currentItem) select(true);																	
 					break;
@@ -206,11 +206,7 @@
 		
 								
 				
-				qDebug()<<"ugol="<<tmpText->rotation()	;
 				if (tmpText->rotation()==90){
-					qDebug()<<w<<" "<<h;
-					qDebug()<<"pos0="<<tmpText->pos().x()<<" "<<tmpText->pos().y();
-					qDebug()<<"after="<<(tmpText->pos().x()-w)<<" "<<(tmpText->pos().y()-h );
 				}		
 				
 					if ((tmpText->rotation()==0 && 

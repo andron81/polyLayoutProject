@@ -14,8 +14,8 @@ class Canvas : public QGraphicsRectItem {
 
 public:
 	Canvas(View* );
-	void edit();
-	bool getisEdit();
+	void edit(bool = true);
+	bool getisEdit();	
 	bool isMouseInside();
 	QPointF getTopLeft() const  ; 
 	void clear();

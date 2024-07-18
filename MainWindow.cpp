@@ -6,6 +6,10 @@
 #include <QJsonArray>
 
 
+void MainWindow::closeEvent(QCloseEvent * e) {
+		Confirm();
+	}
+
 
 EditBlock& MainWindow::geteditBlk(){
 	return editBlk;	
@@ -146,59 +150,31 @@ MainWindow::MainWindow()
 	AppSettings	* MainWindow::getSettings(){
 		return settings;
 	}
+	void MainWindow::Export(QString fn=""){	
+		QStringList fileNames;
+		 if (fn==""){
+			QFileDialog dialog(this);
+			QStringList filters;
+			filters << "png file (*.png)";	
+			dialog.setAcceptMode (QFileDialog :: AcceptSave); 		 
+			dialog.setNameFilters(filters);		 			
+			if (dialog.exec()) fileNames = dialog.selectedFiles(); else return;
+			view->save_to_image( fileNames.back() ,"");
+			
+		 } else 
+			view->save_to_image( currentDir+"/"+fn+".png" ,"");		 
+	}
 	void MainWindow::actExport(){
-
-		QFileDialog dialog(this);
-		 QStringList filters;
-		 filters << "png file (*.png)";	
-		 dialog.setAcceptMode (QFileDialog :: AcceptSave); 		 
-		 dialog.setNameFilters(filters);		 
-		 QStringList fileNames;
-		 if (dialog.exec()) fileNames = dialog.selectedFiles(); else return;		 
-		view->save_to_image( fileNames.back() , dialog.selectedMimeTypeFilter());
-
-
+		Export();
 	}
 	void MainWindow::actNew() {
 		view->getCanvas()->clear();
 	}
 	
-	void MainWindow::Open(QString fn="") {
-			view->getCanvas()->select(false);
-		editBlk.setVisible(EditBlockVisible::changeLength);
-		if (fn!="") fileName=currentDir+"/"+fn+".vct";
-		else
-		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", currentDir, "Vector Draw file (*.vct)" );
-		if ( fileName.isEmpty() ) return;
-		refreshFileInfo(fileName);
-		view->getCanvas()->clear();	
-		
-		qDebug()<<"fileName="<<fileName;
-		QString val;
-		QFile file;
-      file.setFileName(currentDir+"/"+fileName);
-      file.open(QIODevice::ReadOnly | QIODevice::Text);
-      val = file.readAll();
-      file.close();      	  		  
-	  itemOperations::fillCanvas(this,scene,QJsonDocument::fromJson(val.toUtf8()));	
-	  }
 	
-	void MainWindow::actOpen() {
-		Open();
-	}
-	void MainWindow::refreshFileInfo(QString filename){
-		QFileInfo fi = QFileInfo(filename);
-			currentDir = fi.dir().path() ;
-			fileName   = fi.fileName();	
-			
-			setWindowTitle(QFileInfo(QCoreApplication::applicationName()).baseName()
-			+" "+ currentDir +"/"+fileName
-			);
-	}
-	void MainWindow::saveFile(bool dialog=false) {
+		void MainWindow::saveFile(bool dialog=false) {
 		view->getCanvas()->select(false);
-		
-		qDebug()<<"currentDir from saveFile="<<currentDir;
+			
 		if ( !dialog || fileName.isEmpty() ) {
 			QString filename = QFileDialog::getSaveFileName( nullptr, "Сохранить", currentDir, "Векторный файл (*.vct)" );
 			if ( filename.isEmpty() ) return;			
@@ -218,10 +194,67 @@ MainWindow::MainWindow()
 		m_currentJsonObject["texts"]=textsArray;
 		
 		QJsonDocument doc = QJsonDocument(m_currentJsonObject);
-		   QFile jsonFile(currentDir +"/"+fileName);
+		   QFile jsonFile(currentDir +"/"+fileName+".vct");
 			jsonFile.open(QFile::WriteOnly);
 			jsonFile.write(doc.toJson());					
 	}
+	
+	
+	void MainWindow::Confirm(){
+	if (view->getCanvas()->getisEdit()) {	
+	QMessageBox box;
+		box.setIcon(QMessageBox::Question);
+		box.setWindowTitle("Вопрос");
+		box.setText("Сохранить изменения ?");
+		box.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+		QAbstractButton * buttonY = box.button(QMessageBox::Yes);
+		buttonY->setText("Да");
+		QAbstractButton *buttonN = box.button(QMessageBox::No);
+		buttonN->setText("Нет");
+		box.exec();
+		if (box.clickedButton() == buttonY) {
+				saveFile(true);
+				if (mode) Export(fileName);
+				view->getCanvas()->edit(false);
+				QApplication::quit();
+		
+		}
+		else if (box.clickedButton() == buttonN) {}
+	}	
+		
+		
+	}
+	
+	void MainWindow::Open(QString fn="") {
+			view->getCanvas()->select(false);
+		editBlk.setVisible(EditBlockVisible::changeLength);
+		if (fn!="") fileName=currentDir+"/"+fn+".vct";
+			else
+		fileName = QFileDialog::getOpenFileName( nullptr, "Открыть", currentDir, "Vector Draw file (*.vct)" );
+		if ( fileName.isEmpty() ) return;
+		refreshFileInfo(fileName);
+		view->getCanvas()->clear();			
+		QString val;
+		QFile file;
+      file.setFileName(currentDir+"/"+fileName+".vct");
+      file.open(QIODevice::ReadOnly | QIODevice::Text);
+      val = file.readAll();
+      file.close();      	  		  
+	  itemOperations::fillCanvas(this,scene,QJsonDocument::fromJson(val.toUtf8()));	
+	  }
+	
+	void MainWindow::actOpen() {
+		Open();
+	}
+	void MainWindow::refreshFileInfo(QString filename){
+		QFileInfo fi = QFileInfo(filename);
+			currentDir = fi.dir().path() ;
+			fileName   = fi.baseName();	
+			setWindowTitle(QFileInfo(QCoreApplication::applicationName()).baseName()
+			+" "+ currentDir +"/"+fileName+"."+fi.suffix()
+			);
+	}
+
 	
 	void MainWindow::actSave() {
 		saveFile(true);
@@ -232,26 +265,22 @@ MainWindow::MainWindow()
 		
 	}
 	void MainWindow::actExit() {
-		qDebug()<<"Exit";
+		Confirm();		
 	}
 	void MainWindow::acttool_edit() {
 		currentActiveTool = ToolType::edit;
-		qDebug()<<"tool_edit";
 	}
 	void MainWindow::acttool_size() {
 		view->getCanvas()->select(false);
 		currentActiveTool = ToolType::size;
-		qDebug()<<"tool_size";
 	}
 	void MainWindow::acttool_dotted_line() {
 		view->getCanvas()->select(false);
 		currentActiveTool = ToolType::line_dashed;
-		qDebug()<<"tool_dotted_line";
 	}
 	void MainWindow::acttool_solid_line() {
 		view->getCanvas()->select(false);
 		currentActiveTool = ToolType::line_solid;
-		qDebug()<<"tool_solid_line";
 	}
 	void MainWindow::acttool_remove() {
 		if (view->getCanvas()->getCurrentItem()) {
@@ -262,7 +291,6 @@ MainWindow::MainWindow()
 	void MainWindow::acttool_text() {
 		view->getCanvas()->select(false);
 		currentActiveTool = ToolType::text;
-		qDebug()<<"acttool_text";
 	}
 
 	void MainWindow::actarrow_left() {
@@ -299,7 +327,6 @@ MainWindow::MainWindow()
 				rotateButton->setVisible(false);
 			break;
 			case EditBlockVisible::changeLength :
-			qDebug()<<"changeLength";				
 				setVisible(EditBlockVisible::none);
 				widgetmodifyAct->setEnabled(true);	
 				lineSizeEdit->setVisible(true);
