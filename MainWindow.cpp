@@ -28,13 +28,13 @@ void MainWindow::lineSizeEditChanged() {
 	QGraphicsItem* itemTmp = view->getCanvas()->getCurrentItem();	
 	if (itemTmp) {
 		view->getCanvas()->edit();
-	if (itemTmp->type()==600)
+	if (itemTmp->type()==itemindex::Myline)
 	static_cast<Myline*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());
 	else 
-	if (itemTmp->type()==602){
+	if (itemTmp->type()==itemindex::Text){
 	static_cast<Text*>(itemTmp)->changeSize(editBlk.lineSizeEdit->text().toDouble());	
 	}
-	if (itemTmp->type()==603){
+	if (itemTmp->type()==itemindex::Size){
 	static_cast<Size*>(itemTmp)->changeLength(editBlk.lineSizeEdit->text().toDouble());	
 	}
 	}

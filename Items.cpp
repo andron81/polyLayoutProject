@@ -25,7 +25,7 @@ void itemOperations::fillCanvas(MainWindow * mw, QGraphicsScene * scene, QJsonDo
 			for (auto v : items) {
 				QJsonObject element = v.toObject();
 					switch (element["type"].toInt())	 {
-						case 602: {
+						case itemindex::Text: {
 					Text* itm = new Text(mw, QPointF(element["x"].toInt(),element["y"].toInt()));
 					itm->setPlainText( element["text"].toString() );
 					itm->setRotation(element["a"].toInt());
@@ -34,7 +34,7 @@ void itemOperations::fillCanvas(MainWindow * mw, QGraphicsScene * scene, QJsonDo
 						
 						break;
 						}
-						 case 603: {
+						 case itemindex::Size: {
 					Size* size = new Size(mw,{element["x1"].toDouble(),element["y1"].toDouble()});
 					size->changesecondPointCoord({element["x2"].toDouble(),element["y2"].toDouble()},true);
 					size->changelastPointCoord({element["x3"].toDouble(),element["y3"].toDouble()});
@@ -44,7 +44,7 @@ void itemOperations::fillCanvas(MainWindow * mw, QGraphicsScene * scene, QJsonDo
 					scene->addItem(size);
 						break;
 						}
-						case 600:{				
+						case itemindex::Myline:{				
 					Myline* line = new Myline(mw,{element["x1"].toDouble(),element["y1"].toDouble()});
 					line->changesecondPointCoord({element["x2"].toDouble(),element["y2"].toDouble()},true);				
 					for (qint8 i=0; i<2;i++) line->changeMode();
@@ -75,7 +75,7 @@ QJsonObject  itemOperations::to_JSON(QGraphicsItem * item){
 	_3points itemPoints;
 	 int type = item->type();
 		switch (type){
-			case 600:{				
+			case itemindex::Myline:{				
 				Myline* line = static_cast<Myline*>(item);
 				itemPoints = line->getAllPoints();
 				jsonResult["type"] = type;
@@ -87,7 +87,7 @@ QJsonObject  itemOperations::to_JSON(QGraphicsItem * item){
 				jsonResult["y2"]=itemPoints.secondPoint.y();				
 			break;
 			}
-			case 602:{
+			case itemindex::Text:{
 				Text* txt = static_cast<Text*>(item);
 				itemPoints = txt->getAllPoints();				 		
 				jsonResult["type"] = type;
@@ -98,7 +98,7 @@ QJsonObject  itemOperations::to_JSON(QGraphicsItem * item){
 				jsonResult["text"] = txt->toPlainText();
 			break;
 			}
-			case 603:{
+			case itemindex::Size:{
 				Size* sz = static_cast<Size*>(item);
 				itemPoints = sz->getAllPoints();				 		
 				jsonResult["type"] = type;
@@ -118,21 +118,21 @@ QJsonObject  itemOperations::to_JSON(QGraphicsItem * item){
 
 void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	switch (item->type()){
-			case 600:{
+			case itemindex::Myline:{
 				Myline* line = static_cast<Myline*>(item);
 				line->setColor(Color);
 				line->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(line->getLength()));
 				line->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );				
 			break;
 			}
-			case 603:{
+			case itemindex::Size:{
 				Size* sz = static_cast<Size*>(item);
 				sz->setColor(Color);
 				sz->getmw()->geteditBlk().lineSizeEdit->setText(QString::number(sz->getLength()));
 				sz->getmw()->geteditBlk().setVisible(EditBlockVisible::changeLength );
 			break;
 			}
-			case 602:{
+			case itemindex::Text:{
 				Text* txt = static_cast<Text*>(item);
 				txt->setColor(Color);
 				txt->getmw()->geteditBlk().lineTextEdit->setText(txt->toPlainText());
@@ -173,7 +173,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	
 	void itemOperations::move(QGraphicsItem * item, int movement){
 		switch (item->type()){
-			case 600:{
+			case itemindex::Myline:{
 			Myline* line = static_cast<Myline*>(item);
 			if (movement==0) line->moveLeft(); else
 			if (movement==1) line->moveRight(); else
@@ -181,7 +181,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			if (movement==3) line->moveDown(); 
 			break;
 			}
-			case 602:{
+			case itemindex::Text:{
 			Text* text = static_cast<Text*>(item);
 			if (movement==0) text->moveLeft(); else
 			if (movement==1) text->moveRight(); else
@@ -189,7 +189,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 			if (movement==3) text->moveDown(); 
 			break;
 			}
-			case 603:{
+			case itemindex::Size:{
 			Size* sz = static_cast<Size*>(item);
 			if (movement==0) sz->moveLeft(); else
 			if (movement==1) sz->moveRight(); else
@@ -214,7 +214,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 	};
 	void Myline::setItemPen(qint64 style, qint8 width, qint64 color){		
 		switch (style) {
-			case 600: pen.setStyle(Qt::SolidLine);break;
+			case itemindex::Myline: pen.setStyle(Qt::SolidLine);break;
 			case 601: pen.setStyle(Qt::DashLine);break;
 		}
 		pen.setWidth(width);
@@ -298,7 +298,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		/////
 		for (qsizetype i = 1; i < sz; i++) { 
 			QGraphicsItem* item=itemList.at(i);							
-			if (item->type()==600) {							
+			if (item->type()==itemindex::Myline) {							
 				Myline * tmpLine = static_cast<Myline *>( item );				
 				QLineF linecoord = tmpLine->line();
 				linecoord.setP1(linecoord.p1() +item->pos());
@@ -666,7 +666,7 @@ void itemOperations::setColor(QGraphicsItem * item , QColor Color) {
 		int 							sz=itemList.size();
 		for (qsizetype i = 1; i < sz; i++) { 
 			QGraphicsItem* item=itemList.at(i);							
-			if (item->type()==600) {							
+			if (item->type()==itemindex::Myline) {							
 				Myline * tmpLine = static_cast<Myline *>( item );				
 				QLineF linecoord = tmpLine->line();
 				linecoord.setP1(linecoord.p1() +item->pos());

@@ -1,8 +1,12 @@
 #pragma once
 #include "MainWindow.hpp"
 #include <variant>
-//enum types { e_line_solid = QGraphicsItem::UserType + 1, e_line_dashed, e_text, e_size };
-
+namespace itemindex
+{
+const quint16 Myline = 600;
+const quint16 Text = 602;
+const quint16 Size = 603;
+};
 class itemOperations {
 	public:
 	static void setColor(QGraphicsItem * , QColor);

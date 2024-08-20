@@ -73,11 +73,11 @@
 		case ToolType::edit:	{
 			if (isMouseHold && currentItem) {
 				edit();
-				if (currentItem->type()==600)
+				if (currentItem->type()==itemindex::Myline )
 				static_cast<Myline*>(currentItem)->drag(cursorCoord, currentItemPoint);
-				if (currentItem->type()==603)
+				if (currentItem->type()==itemindex::Text )
 				static_cast<Size*>(currentItem)->drag(cursorCoord, currentItemPoint);
-				if (currentItem->type()==602)
+				if (currentItem->type()==itemindex::Size )
 				static_cast<Text*>(currentItem)->drag(cursorCoord);
 			}	
 			break;
